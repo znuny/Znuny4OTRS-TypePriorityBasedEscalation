@@ -7,6 +7,7 @@
     <Vendor>Znuny GmbH</Vendor>
     <URL>http://znuny.com/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <PackageRequired Version="1.0.0">Znuny4OTRS-Repo</PackageRequired>
     <Description Lang="en">An extension to support priority based escalations.</Description>
     <Description Lang="de">Eine Erweiterung um Prioritätsbasierte Eskallation zu unterstützen.</Description>
     <Filelist>
