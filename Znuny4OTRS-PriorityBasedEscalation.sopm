@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<otrs_package version="1.0">
+    <Name>Znuny4OTRS-PriorityBasedEscalation</Name>
+    <Version>1.0.0</Version>
+    <Framework>3.1.x</Framework>
+    <Framework>3.2.x</Framework>
+    <Vendor>Znuny GmbH</Vendor>
+    <URL>http://znuny.com/</URL>
+    <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <Description Lang="en">An extension to support priority based escalations.</Description>
+    <Description Lang="de">Eine Erweiterung um Prioritätsbasierte Eskallation zu unterstützen.</Description>
+    <Filelist>
+        <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
+        <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
+        <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
+        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSPriorityBasedEscalation.pm"/>
+    </Filelist>
+    <DatabaseInstall>
+        <TableAlter Name="ticket_priority">
+            <ColumnAdd Name="first_response_time" Required="true" Type="INTEGER"/>
+            <ColumnAdd Name="first_response_notify" Required="false" Type="SMALLINT"/>
+            <ColumnAdd Name="update_time" Required="true" Type="INTEGER"/>
+            <ColumnAdd Name="update_notify" Required="false" Type="SMALLINT"/>
+            <ColumnAdd Name="solution_time" Required="true" Type="INTEGER"/>
+            <ColumnAdd Name="solution_notify" Required="false" Type="SMALLINT"/>
+        </TableAlter>
+    </DatabaseInstall>
+    <DatabaseUninstall>
+        <TableAlter Name="ticket_priority">
+            <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
+            <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
+            <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>
+            <ColumnDrop Name="update_notify" Required="false" Type="SMALLINT"/>
+            <ColumnDrop Name="solution_time" Required="true" Type="INTEGER"/>
+            <ColumnDrop Name="solution_notify" Required="false" Type="SMALLINT"/>
+        </TableAlter>
+    </DatabaseUninstall>
+</otrs_package>
