@@ -18,6 +18,7 @@
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSPriorityBasedEscalation.pm"/>
+        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRS-PriorityBasedEscalation.xml"/>
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">
