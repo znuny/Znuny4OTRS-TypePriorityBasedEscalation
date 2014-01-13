@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<otrs_config version="1.0" init="Changes">
+    <ConfigItem Name="Ticket::EventModulePost###900-EscalationStopEvents" Required="0" Valid="1">
+        <Description Translatable="1">Ticket event module that triggers the escalation stop events.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::Ticket</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::System::Ticket::Event::TriggerEscalationStopEvents</Item>
+                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|ArticleCreate|TicketPriorityUpdate</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Ticket::EventModulePost###900-EscalationIndex" Required="0" Valid="1">
+        <Description Translatable="1">Updates the ticket escalation index after a ticket attribute got updated.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::Ticket</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::System::Ticket::Event::TicketEscalationIndex</Item>
+                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|TicketCreate|ArticleCreate|TicketPriorityUpdate</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+</otrs_config>
