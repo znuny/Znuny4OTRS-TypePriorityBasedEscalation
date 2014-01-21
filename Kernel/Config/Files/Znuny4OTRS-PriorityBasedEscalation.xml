@@ -27,7 +27,7 @@
         <Group>Znuny4OTRS-PriorityBasedEscalation</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
-            <Option SelectedID="0">
+            <Option SelectedID="Agent">
                 <Item Key="Owner">First owner change</Item>
                 <Item Key="Agent">First agent response</Item>
             </Option>
