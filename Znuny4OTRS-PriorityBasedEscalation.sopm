@@ -13,13 +13,14 @@
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <PackageRequired Version="1.0.0">Znuny4OTRS-Repo</PackageRequired>
     <Description Lang="en">An extension to support priority based escalations.</Description>
-    <Description Lang="de">Eine Erweiterung um Prioritätsbasierte Eskallation zu unterstützen.</Description>
+    <Description Lang="de">Eine Erweiterung um prioritätsbasierte Eskallation zu unterstützen.</Description>
     <Filelist>
         <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
-        <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
-        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSPriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRS-PriorityBasedEscalation.xml"/>
+        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSPriorityBasedEscalation.pm"/>
+        <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSPriorityBasedEscalation"/>
+        <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">
