@@ -54,8 +54,7 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
     return %Escalation;
 }
 
-
-sub _TicketGetFirstResponse {
+sub Kernel::System::Ticket::_TicketGetFirstResponse {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
