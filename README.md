@@ -7,7 +7,7 @@ It's to allow ticket priority based escalations.
 
 **Feature List**
 
-* Allows you to define escallation attributes by priority in admin interface.
+* Allows you to define escalation attributes by priority in admin interface.
 
 **Prerequisites**
 
@@ -16,6 +16,8 @@ It's to allow ticket priority based escalations.
 - OTRS 3.1
 
 - OTRS 3.2
+
+- OTRS 3.3
 
 **Installation**
 
@@ -27,7 +29,7 @@ Download the package and install it via admin interface -> package manager or us
 
 **Download**
 
-For download see [http://znuny.com/d/](http://znuny.com/d/)
+For download see [http://znuny.com/en/#!/addons](http://znuny.com/en/#!/addons)
 
 **Commercial Support**
 
@@ -38,5 +40,4 @@ Enjoy!
  Your Znuny Team!
 
  [http://znuny.com](http://znuny.com)
-
 
