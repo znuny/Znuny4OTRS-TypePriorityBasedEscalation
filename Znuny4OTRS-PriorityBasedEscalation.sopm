@@ -19,7 +19,7 @@
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRS-PriorityBasedEscalation.xml"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSPriorityBasedEscalation.pm"/>
-        <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSPriorityBasedEscalation"/>
+        <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSPriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
     </Filelist>
     <DatabaseInstall>
