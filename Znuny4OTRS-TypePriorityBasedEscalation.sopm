@@ -19,11 +19,14 @@
     <Description Lang="de">Eine Erweiterung um typ- und prioritätsbasierte Eskalationen zu unterstützen.</Description>
     <Filelist>
         <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
+        <File Permission="644" Location="Custom/Kernel/System/Type.pm"/>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
+        <File Permission="644" Location="Custom/Kernel/Modules/AdminType.pm"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
+        <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminType.dtl"/>
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">
