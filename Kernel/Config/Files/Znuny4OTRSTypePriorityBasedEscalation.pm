@@ -37,10 +37,17 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
     }
     else {
 
-        %Escalation = $Self->{PriorityObject}->PriorityGet(
-            PriorityID => $Ticket{PriorityID},
-            UserID     => 1,
+        %Escalation = $Self->{TypeObject}->TypeGet(
+            ID     => $Ticket{TypeID},
+            UserID => $Param{UserID},
         );
+
+        if ( !( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} ) ) {
+            %Escalation = $Self->{PriorityObject}->PriorityGet(
+                PriorityID => $Ticket{PriorityID},
+                UserID     => 1,
+            );
+        }
 
         if ( !( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} ) ) {
             %Escalation = $Self->{QueueObject}->QueueGet(
@@ -66,7 +73,7 @@ sub Kernel::System::Ticket::_TicketGetFirstResponse {
     }
 
 #---
-# Znuny4OTRS-PriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalations
 #---
 #    # check if first response is already done
 #    return if !$Self->{DBObject}->Prepare(

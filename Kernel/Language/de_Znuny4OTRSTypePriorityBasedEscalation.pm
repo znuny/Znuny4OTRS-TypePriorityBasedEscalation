@@ -1,9 +1,9 @@
 # --
-# Kernel/Language/de_Znuny4OTRSPriorityBasedEscalation.pm - the German translation of the texts of Znuny4OTRSPriorityBasedEscalation
+# Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm - the German translation of the texts of Znuny4OTRSTypePriorityBasedEscalation
 # Copyright (C) 2013 Znuny GmbH, http://znuny.com/
 # --
 
-package Kernel::Language::de_Znuny4OTRSPriorityBasedEscalation;
+package Kernel::Language::de_Znuny4OTRSTypePriorityBasedEscalation;
 
 use strict;
 use warnings;

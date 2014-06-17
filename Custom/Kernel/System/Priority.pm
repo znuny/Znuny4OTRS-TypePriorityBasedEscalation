@@ -183,13 +183,22 @@ sub PriorityGet {
     return %{$Cache} if $Cache;
 
     # ask database
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#     return if !$Self->{DBObject}->Prepare(
+#         SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by '
+#             . 'FROM ticket_priority WHERE id = ?',
+#         Bind  => [ \$Param{PriorityID} ],
+#         Limit => 1,
+#     );
     return if !$Self->{DBObject}->Prepare(
-#        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by '
         SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_priority WHERE id = ?',
         Bind  => [ \$Param{PriorityID} ],
         Limit => 1,
     );
+# ---
 
     # fetch the result
     my %Data;
@@ -201,13 +210,16 @@ sub PriorityGet {
         $Data{CreateBy}   = $Row[4];
         $Data{ChangeTime} = $Row[5];
         $Data{ChangeBy}   = $Row[6];
-
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
         $Data{FirstResponseTime}   = $Row[7];
         $Data{FirstResponseNotify} = $Row[8];
         $Data{UpdateTime}          = $Row[9];
         $Data{UpdateNotify}        = $Row[10];
         $Data{SolutionTime}        = $Row[11];
         $Data{SolutionNotify}      = $Row[12];
+# ---
     }
 
     # set cache
@@ -242,16 +254,26 @@ sub PriorityAdd {
         }
     }
 
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#     return if !$Self->{DBObject}->Do(
+#         SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, '
+#             . 'change_time, change_by) VALUES '
+#             . '(?, ?, current_timestamp, ?, current_timestamp, ?)',
+#         Bind => [
+#             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
+#         ],
+#     );
     return if !$Self->{DBObject}->Do(
-#        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, '
         SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . 'change_time, change_by) VALUES '
             . '(?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
         Bind => [
-#            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
         ],
     );
+# ---
 
     # get new state id
     return if !$Self->{DBObject}->Prepare(
@@ -304,14 +326,24 @@ sub PriorityUpdate {
         $Param{CheckSysConfig} = 1;
     }
 
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#     return if !$Self->{DBObject}->Do(
+#         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
+#             . 'change_time = current_timestamp, change_by = ? WHERE id = ?',
+#         Bind => [
+#             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{PriorityID},
+#         ],
+#     );
     return if !$Self->{DBObject}->Do(
         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
-            . 'change_time = current_timestamp, change_by = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ?  WHERE id = ?',
+            . 'change_time = current_timestamp, change_by = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
-#            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{PriorityID},
             \$Param{Name}, \$Param{ValidID}, \$Param{UserID},  \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{PriorityID},
         ],
     );
+# ---
 
     # delete cache
     $Self->{CacheInternalObject}->CleanUp();

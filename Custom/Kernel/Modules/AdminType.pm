@@ -1,25 +1,19 @@
 # --
-# Kernel/Modules/AdminPriority.pm - admin frontend of ticket priority
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
-# Copyright (C) 2013 Znuny GmbH, http://znuny.com/
-# --
-# $Id: AdminPriority.pm,v 1.15 2012-02-27 22:53:37 ep Exp $
+# Kernel/Modules/AdminType.pm - to add/update/delete ticket types
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-package Kernel::Modules::AdminPriority;
+package Kernel::Modules::AdminType;
 
 use strict;
 use warnings;
 
-use Kernel::System::Priority;
+use Kernel::System::Type;
 use Kernel::System::Valid;
-
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.15 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,14 +22,14 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for my $Needed (qw(ConfigObject ParamObject LogObject LayoutObject)) {
+    # check all needed objects
+    for my $Needed (qw(ParamObject DBObject LayoutObject ConfigObject LogObject)) {
         if ( !$Self->{$Needed} ) {
             $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
         }
     }
-    $Self->{PriorityObject} = Kernel::System::Priority->new(%Param);
-    $Self->{ValidObject}    = Kernel::System::Valid->new(%Param);
+    $Self->{TypeObject}  = Kernel::System::Type->new(%Param);
+    $Self->{ValidObject} = Kernel::System::Valid->new(%Param);
 
     return $Self;
 }
@@ -47,21 +41,21 @@ sub Run {
     # change
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'Change' ) {
-        my %GetParam = ();
-        $GetParam{PriorityID} = $Self->{ParamObject}->GetParam( Param => 'PriorityID' ) || '';
-        my %PriorityData = $Self->{PriorityObject}->PriorityGet(
-            PriorityID => $GetParam{PriorityID},
-            UserID     => $Self->{UserID},
-        );
+        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' ) || '';
+        my %Data = $Self->{TypeObject}->TypeGet( ID => $ID );
+        if ( !%Data ) {
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => 'Need Type!',
+            );
+        }
         my $Output = $Self->{LayoutObject}->Header();
         $Output .= $Self->{LayoutObject}->NavigationBar();
         $Self->_Edit(
             Action => 'Change',
-            %PriorityData,
-            %GetParam,
+            %Data,
         );
         $Output .= $Self->{LayoutObject}->Output(
-            TemplateFile => 'AdminPriority',
+            TemplateFile => 'AdminType',
             Data         => \%Param,
         );
         $Output .= $Self->{LayoutObject}->Footer();
@@ -76,14 +70,13 @@ sub Run {
         # challenge token check for write action
         $Self->{LayoutObject}->ChallengeTokenCheck();
 
+        my $Note = '';
         my ( %GetParam, %Errors );
-
-        # get params
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+#        for my $Parameter (qw(ID Name Text Comment ValidID)) {
+        for my $Parameter (qw(ID Name  Text Comment ValidID FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -95,22 +88,28 @@ sub Run {
             }
         }
 
+        my %Data = $Self->{TypeObject}->TypeGet( ID => $GetParam{ID} );
+        if ( !%Data ) {
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => 'Need Type!',
+            );
+        }
+
         # if no errors occurred
         if ( !%Errors ) {
 
-            # update priority
-            my $Update = $Self->{PriorityObject}->PriorityUpdate(
+            # update type
+            my $Update = $Self->{TypeObject}->TypeUpdate(
                 %GetParam,
                 UserID => $Self->{UserID}
             );
-
             if ($Update) {
                 $Self->_Overview();
                 my $Output = $Self->{LayoutObject}->Header();
                 $Output .= $Self->{LayoutObject}->NavigationBar();
-                $Output .= $Self->{LayoutObject}->Notify( Info => 'Priority updated!' );
+                $Output .= $Self->{LayoutObject}->Notify( Info => 'Type updated!' );
                 $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'AdminPriority',
+                    TemplateFile => 'AdminType',
                     Data         => \%Param,
                 );
                 $Output .= $Self->{LayoutObject}->Footer();
@@ -128,7 +127,7 @@ sub Run {
             %GetParam,
         );
         $Output .= $Self->{LayoutObject}->Output(
-            TemplateFile => 'AdminPriority',
+            TemplateFile => 'AdminType',
             Data         => \%Param,
         );
         $Output .= $Self->{LayoutObject}->Footer();
@@ -140,7 +139,7 @@ sub Run {
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Add' ) {
         my %GetParam = ();
-        $GetParam{PriorityID} = $Self->{ParamObject}->GetParam( Param => 'PriorityID' ) || '';
+        $GetParam{Name} = $Self->{ParamObject}->GetParam( Param => 'Name' );
         my $Output = $Self->{LayoutObject}->Header();
         $Output .= $Self->{LayoutObject}->NavigationBar();
         $Self->_Edit(
@@ -148,7 +147,7 @@ sub Run {
             %GetParam,
         );
         $Output .= $Self->{LayoutObject}->Output(
-            TemplateFile => 'AdminPriority',
+            TemplateFile => 'AdminType',
             Data         => \%Param,
         );
         $Output .= $Self->{LayoutObject}->Footer();
@@ -163,14 +162,13 @@ sub Run {
         # challenge token check for write action
         $Self->{LayoutObject}->ChallengeTokenCheck();
 
+        my $Note = '';
         my ( %GetParam, %Errors );
-
-        # get params
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+#        for my $Parameter (qw(ID Name Text Comment ValidID)) {
+        for my $Parameter (qw(ID Name Text Comment ValidID FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -185,18 +183,18 @@ sub Run {
         # if no errors occurred
         if ( !%Errors ) {
 
-            my $NewPriority = $Self->{PriorityObject}->PriorityAdd(
+            # add type
+            my $NewType = $Self->{TypeObject}->TypeAdd(
                 %GetParam,
-                UserID => $Self->{UserID},
+                UserID => $Self->{UserID}
             );
-
-            if ($NewPriority) {
+            if ($NewType) {
                 $Self->_Overview();
                 my $Output = $Self->{LayoutObject}->Header();
                 $Output .= $Self->{LayoutObject}->NavigationBar();
-                $Output .= $Self->{LayoutObject}->Notify( Info => 'Priority added!' );
+                $Output .= $Self->{LayoutObject}->Notify( Info => 'Type added!' );
                 $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'AdminPriority',
+                    TemplateFile => 'AdminType',
                     Data         => \%Param,
                 );
                 $Output .= $Self->{LayoutObject}->Footer();
@@ -214,7 +212,7 @@ sub Run {
             %GetParam,
         );
         $Output .= $Self->{LayoutObject}->Output(
-            TemplateFile => 'AdminPriority',
+            TemplateFile => 'AdminType',
             Data         => \%Param,
         );
         $Output .= $Self->{LayoutObject}->Footer();
@@ -229,12 +227,13 @@ sub Run {
         my $Output = $Self->{LayoutObject}->Header();
         $Output .= $Self->{LayoutObject}->NavigationBar();
         $Output .= $Self->{LayoutObject}->Output(
-            TemplateFile => 'AdminPriority',
+            TemplateFile => 'AdminType',
             Data         => \%Param,
         );
         $Output .= $Self->{LayoutObject}->Footer();
         return $Output;
     }
+
 }
 
 sub _Edit {
@@ -252,7 +251,7 @@ sub _Edit {
     my %ValidList        = $Self->{ValidObject}->ValidList();
     my %ValidListReverse = reverse %ValidList;
 
-    $Param{ValidOptionStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{ValidOption} = $Self->{LayoutObject}->BuildSelection(
         Data       => \%ValidList,
         Name       => 'ValidID',
         SelectedID => $Param{ValidID} || $ValidListReverse{valid},
@@ -262,6 +261,7 @@ sub _Edit {
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
+
     my %NotifyLevelList = (
         10 => '10%',
         20 => '20%',
@@ -318,8 +318,6 @@ sub _Edit {
 sub _Overview {
     my ( $Self, %Param ) = @_;
 
-    my $Output = '';
-
     $Self->{LayoutObject}->Block(
         Name => 'Overview',
         Data => \%Param,
@@ -332,33 +330,24 @@ sub _Overview {
         Name => 'OverviewResult',
         Data => \%Param,
     );
+    my %List = $Self->{TypeObject}->TypeList( Valid => 0 );
 
-    # get priority list
-    my %PriorityList = $Self->{PriorityObject}->PriorityList(
-        Valid  => 0,
-        UserID => $Self->{UserID},
-    );
-
-    # if there are any priorities defined, they are shown
-    if (%PriorityList) {
+    # if there are any types, they are shown
+    if (%List) {
 
         # get valid list
         my %ValidList = $Self->{ValidObject}->ValidList();
 
-        for my $PriorityID ( sort { $a <=> $b } keys %PriorityList ) {
+        for my $TypeID ( sort { $List{$a} cmp $List{$b} } keys %List ) {
 
-            # get priority data
-            my %PriorityData = $Self->{PriorityObject}->PriorityGet(
-                PriorityID => $PriorityID,
-                UserID     => $Self->{UserID},
+            my %Data = $Self->{TypeObject}->TypeGet(
+                ID => $TypeID,
             );
-
             $Self->{LayoutObject}->Block(
                 Name => 'OverviewResultRow',
                 Data => {
-                    %PriorityData,
-                    PriorityID => $PriorityID,
-                    Valid      => $ValidList{ $PriorityData{ValidID} },
+                    Valid => $ValidList{ $Data{ValidID} },
+                    %Data,
                 },
             );
         }

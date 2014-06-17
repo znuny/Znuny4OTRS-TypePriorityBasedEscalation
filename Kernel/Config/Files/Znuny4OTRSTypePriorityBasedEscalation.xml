@@ -24,7 +24,7 @@
     </ConfigItem>
     <ConfigItem Name="FirstResponseDecisionBase" Required="0" Valid="1">
         <Description Translatable="1">This configuration defines if the first response time should be calculated based on the first owner change or the first agent response.</Description>
-        <Group>Znuny4OTRS-PriorityBasedEscalation</Group>
+        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="Agent">

@@ -1,13 +1,15 @@
 ![Znuny logo](http://znuny.com/assets/logo_small.png)
 
 
-Znuny4OTRS - Priority based escalation
+Znuny4OTRS - Type and priority based escalation
 ======================================
-It's to allow ticket priority based escalations.
+This package extends the OTRS standard with type and priority based escalations. The lookup for escalation data is performed in the following order:
+Service/SLA, type, priority, queue
 
 **Feature List**
 
-* Allows you to define escalation attributes by priority in admin interface.
+* Allows you to define escalation attributes for ticket types via the admin interface.
+* Allows you to define escalation attributes for ticket priorities via the admin interface.
 
 **Prerequisites**
 
@@ -25,7 +27,7 @@ Download the package and install it via admin interface -> package manager or us
 
 **Configuration**
 
-* Define the list in Admin-Interface -> Priorities
+* Define the list in Admin-Interface -> Types/Priorities
 
 **Download**
 

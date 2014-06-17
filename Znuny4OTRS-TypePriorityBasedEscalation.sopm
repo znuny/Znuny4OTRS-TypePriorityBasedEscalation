@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <Name>Znuny4OTRS-PriorityBasedEscalation</Name>
+    <Name>Znuny4OTRS-TypePriorityBasedEscalation</Name>
     <Version>1.1.2</Version>
     <ChangeLog Version="1.1.2" Date="2014-01-21 17:40:44 +0100">Added SysConfig to define if the first response time should be calculated based on the first owner change or the first agent response.</ChangeLog>
     <ChangeLog Version="1.1.1" Date="2014-01-13 14:35:54 +0100">Added config file to add TicketPriorityUpdate to recalculate escalation.</ChangeLog>
@@ -13,14 +13,14 @@
     <URL>http://znuny.com/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <PackageRequired Version="1.0.0">Znuny4OTRS-Repo</PackageRequired>
-    <Description Lang="en">An extension to support priority based escalations.</Description>
-    <Description Lang="de">Eine Erweiterung um prioritätsbasierte Eskallation zu unterstützen.</Description>
+    <Description Lang="en">An extension to support type and priority based escalations.</Description>
+    <Description Lang="de">Eine Erweiterung um typ- und prioritätsbasierte Eskalationen zu unterstützen.</Description>
     <Filelist>
         <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
-        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRS-PriorityBasedEscalation.xml"/>
-        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSPriorityBasedEscalation.pm"/>
-        <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSPriorityBasedEscalation.pm"/>
+        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
+        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
+        <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
     </Filelist>
     <DatabaseInstall>
@@ -32,9 +32,25 @@
             <ColumnAdd Name="solution_time" Required="true" Type="INTEGER"/>
             <ColumnAdd Name="solution_notify" Required="false" Type="SMALLINT"/>
         </TableAlter>
+        <TableAlter Name="ticket_type">
+            <ColumnAdd Name="first_response_time" Required="true" Type="INTEGER"/>
+            <ColumnAdd Name="first_response_notify" Required="false" Type="SMALLINT"/>
+            <ColumnAdd Name="update_time" Required="true" Type="INTEGER"/>
+            <ColumnAdd Name="update_notify" Required="false" Type="SMALLINT"/>
+            <ColumnAdd Name="solution_time" Required="true" Type="INTEGER"/>
+            <ColumnAdd Name="solution_notify" Required="false" Type="SMALLINT"/>
+        </TableAlter>
     </DatabaseInstall>
     <DatabaseUninstall>
         <TableAlter Name="ticket_priority">
+            <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
+            <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
+            <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>
+            <ColumnDrop Name="update_notify" Required="false" Type="SMALLINT"/>
+            <ColumnDrop Name="solution_time" Required="true" Type="INTEGER"/>
+            <ColumnDrop Name="solution_notify" Required="false" Type="SMALLINT"/>
+        </TableAlter>
+        <TableAlter Name="ticket_type">
             <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
             <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
             <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>
