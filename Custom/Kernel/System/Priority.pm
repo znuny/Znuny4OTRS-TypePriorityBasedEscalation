@@ -265,6 +265,9 @@ sub PriorityAdd {
 #             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
 #         ],
 #     );
+    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
+        $Param{ $DefaultNullAttr } ||= 0;
+    }
     return if !$Self->{DBObject}->Do(
         SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . 'change_time, change_by) VALUES '
@@ -336,6 +339,9 @@ sub PriorityUpdate {
 #             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{PriorityID},
 #         ],
 #     );
+    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
+        $Param{ $DefaultNullAttr } ||= 0;
+    }
     return if !$Self->{DBObject}->Do(
         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
             . 'change_time = current_timestamp, change_by = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
