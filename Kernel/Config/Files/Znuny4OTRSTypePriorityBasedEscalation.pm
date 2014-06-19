@@ -7,6 +7,8 @@ use Kernel::System::Ticket;
 
 use vars qw(@ISA);
 
+use Kernel::System::VariableCheck qw(:all);
+
 # disable redefine warnings in this scope
 {
 no warnings 'redefine';
@@ -43,10 +45,33 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
         );
 
         if ( !( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} ) ) {
-            %Escalation = $Self->{PriorityObject}->PriorityGet(
-                PriorityID => $Ticket{PriorityID},
-                UserID     => 1,
-            );
+
+            # check if priority bases escalations
+            # are restricted for certain ticket types
+            my $PriorityBasedEscalation = 1;
+            my $TicketTypeRestriction   = $Self->{ConfigObject}->Get('TypeBasedPriorityEscalation');
+
+            if ( IsArrayRefWithData( $TicketTypeRestriction ) ) {
+
+                $PriorityBasedEscalation = 0;
+
+                # check if current Type of current ticket
+                # is enabled for priority based escalations
+                if ( grep { $Ticket{Type} eq $_ } @{ $TicketTypeRestriction } ) {
+                    $PriorityBasedEscalation = 1;
+                }
+            }
+
+            # get priority escalation information
+            # if we got an allowed ticket type
+            # or type restriction is disabled
+            if ( $PriorityBasedEscalation ) {
+
+                %Escalation = $Self->{PriorityObject}->PriorityGet(
+                    PriorityID => $Ticket{PriorityID},
+                    UserID     => 1,
+                );
+            }
         }
 
         if ( !( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} ) ) {

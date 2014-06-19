@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Changes">
+    <ConfigItem Name="TypeBasedPriorityEscalation" Required="0" Valid="0">
+        <Description Translatable="1">This configuration defines a list of ticket types to which the priority based escalation should be restricted. Only tickets with a ticket type of this list will get checked for priority based escalation. All tickets will escalate priority based if this configuration is deactivated or has no types configured.</Description>
+        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Array>
+            </Array>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Ticket::EventModulePost###900-EscalationStopEvents" Required="0" Valid="1">
         <Description Translatable="1">Ticket event module that triggers the escalation stop events.</Description>
         <Group>Ticket</Group>
