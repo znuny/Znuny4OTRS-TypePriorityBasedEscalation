@@ -122,6 +122,10 @@ sub TypeAdd {
 #             . ' VALUES (?, ?, current_timestamp, ?, current_timestamp, ?)',
 #         Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID} ],
 #     );
+    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
+        $Param{ $DefaultNullAttr } ||= 0;
+    }
+
     return if !$Self->{DBObject}->Do(
         SQL => 'INSERT INTO ticket_type (name, valid_id, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . ' create_time, create_by, change_time, change_by)'
@@ -306,6 +310,9 @@ sub TypeUpdate {
 #             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{ID},
 #         ],
 #     );
+    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
+        $Param{ $DefaultNullAttr } ||= 0;
+    }
     return if !$Self->{DBObject}->Do(
         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
             . 'change_time = current_timestamp, change_by = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
