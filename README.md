@@ -3,8 +3,8 @@
 
 Znuny4OTRS - Type and priority based escalation
 ======================================
-This package extends the OTRS standard with type and priority based escalations. The lookup for escalation data is performed in the following order:
-Service/SLA, type, priority, queue
+This package extends the OTRS standard with type and priority based escalations. The lookup for escalation data is configurable via a SysConfig. The default order is:
+Service/SLA, Type, Priority, Queue
 
 **Feature List**
 

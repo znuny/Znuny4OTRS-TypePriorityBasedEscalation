@@ -29,22 +29,38 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
 
     # get escalation properties
     my %Escalation;
-    if ( $Self->{ConfigObject}->Get('Ticket::Service') && $Ticket{SLAID} ) {
-
-        %Escalation = $Self->{SLAObject}->SLAGet(
-            SLAID  => $Ticket{SLAID},
-            UserID => $Param{UserID},
-            Cache  => 1,
-        );
+    my $EscalationOrder = $Self->{ConfigObject}->Get('EscalationOrder');
+    if ( !IsArrayRefWithData( $EscalationOrder ) ) {
+        $EscalationOrder = ['SLA', 'Type', 'Priority', 'Queue'];
     }
-    else {
 
-        %Escalation = $Self->{TypeObject}->TypeGet(
-            ID     => $Ticket{TypeID},
-            UserID => $Param{UserID},
-        );
+    ATTRIBUTE:
+    for my $CurrentAttribute ( @{ $EscalationOrder } ) {
 
-        if ( !( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} ) ) {
+        if ( $CurrentAttribute eq 'SLA' ) {
+
+            next ATTRIBUTE if !$Self->{ConfigObject}->Get('Ticket::Service');
+            next ATTRIBUTE if !$Ticket{SLAID};
+
+            %Escalation = $Self->{SLAObject}->SLAGet(
+                SLAID  => $Ticket{SLAID},
+                UserID => $Param{UserID},
+                Cache  => 1,
+            );
+        }
+        elsif ( $CurrentAttribute eq 'Type' ) {
+
+            next ATTRIBUTE if !$Self->{ConfigObject}->Get('Ticket::Type');
+            next ATTRIBUTE if !$Ticket{TypeID};
+
+            %Escalation = $Self->{TypeObject}->TypeGet(
+                ID     => $Ticket{TypeID},
+                UserID => $Param{UserID},
+            );
+        }
+        elsif ( $CurrentAttribute eq 'Priority' ) {
+
+            next ATTRIBUTE if !$Ticket{PriorityID};
 
             # check if priority bases escalations
             # are restricted for certain ticket types
@@ -52,6 +68,8 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
             my $TicketTypeRestriction   = $Self->{ConfigObject}->Get('TypeBasedPriorityEscalation');
 
             if ( IsArrayRefWithData( $TicketTypeRestriction ) ) {
+
+                next ATTRIBUTE if !$Ticket{Type};
 
                 $PriorityBasedEscalation = 0;
 
@@ -62,25 +80,25 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
                 }
             }
 
-            # get priority escalation information
-            # if we got an allowed ticket type
-            # or type restriction is disabled
-            if ( $PriorityBasedEscalation ) {
+            next ATTRIBUTE if !$PriorityBasedEscalation;
 
-                %Escalation = $Self->{PriorityObject}->PriorityGet(
-                    PriorityID => $Ticket{PriorityID},
-                    UserID     => 1,
-                );
-            }
+            %Escalation = $Self->{PriorityObject}->PriorityGet(
+                PriorityID => $Ticket{PriorityID},
+                UserID     => 1,
+            );
         }
+        elsif ( $CurrentAttribute eq 'Queue' ) {
 
-        if ( !( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} ) ) {
+            next ATTRIBUTE if !$Ticket{QueueID};
+
             %Escalation = $Self->{QueueObject}->QueueGet(
                 ID     => $Ticket{QueueID},
                 UserID => $Param{UserID},
                 Cache  => 1,
             );
         }
+
+        last ATTRIBUTE if ( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} );
     }
 
     return %Escalation;

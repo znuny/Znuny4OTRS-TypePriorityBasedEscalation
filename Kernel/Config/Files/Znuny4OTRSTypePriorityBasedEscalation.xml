@@ -11,7 +11,7 @@
     </ConfigItem>
     <ConfigItem Name="Ticket::EventModulePost###900-EscalationStopEvents" Required="0" Valid="1">
         <Description Translatable="1">Ticket event module that triggers the escalation stop events.</Description>
-        <Group>Ticket</Group>
+        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
         <SubGroup>Core::Ticket</SubGroup>
         <Setting>
             <Hash>
@@ -22,7 +22,7 @@
     </ConfigItem>
     <ConfigItem Name="Ticket::EventModulePost###900-EscalationIndex" Required="0" Valid="1">
         <Description Translatable="1">Updates the ticket escalation index after a ticket attribute got updated.</Description>
-        <Group>Ticket</Group>
+        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
         <SubGroup>Core::Ticket</SubGroup>
         <Setting>
             <Hash>
@@ -40,6 +40,19 @@
                 <Item Key="Owner">First owner change</Item>
                 <Item Key="Agent">First agent response</Item>
             </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="EscalationOrder" Required="0" Valid="1">
+        <Description Translatable="1">This configuration defines in which order escalations should get checked and if configured applied to the ticket. Possible options are: SLA, Type, Priority and Queue. This configuration is key sensetive.</Description>
+        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Array>
+                <Item>SLA</Item>
+                <Item>Type</Item>
+                <Item>Priority</Item>
+                <Item>Queue</Item>
+            </Array>
         </Setting>
     </ConfigItem>
 </otrs_config>
