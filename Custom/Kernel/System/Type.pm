@@ -125,12 +125,13 @@ sub TypeAdd {
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
         $Param{ $DefaultNullAttr } ||= 0;
     }
+    $Param{Calendar} ||= '';
 
     return if !$Self->{DBObject}->Do(
-        SQL => 'INSERT INTO ticket_type (name, valid_id, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
+        SQL => 'INSERT INTO ticket_type (name, valid_id, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . ' create_time, create_by, change_time, change_by)'
             . ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
-        Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID}, \$Param{UserID} ],
+        Bind => [ \$Param{Name}, \$Param{ValidID}, $Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID}, \$Param{UserID} ],
     );
 # ---
 
@@ -232,7 +233,7 @@ sub TypeGet {
 #     );
     return if !$Self->{DBObject}->Prepare(
         SQL => 'SELECT id, name, valid_id, '
-            . 'create_time, create_by, change_time, change_by, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
+            . 'create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_type WHERE id = ?',
         Bind => [ \$Param{ID} ],
     );
@@ -251,12 +252,13 @@ sub TypeGet {
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-        $Type{FirstResponseTime}   = $Data[7];
-        $Type{FirstResponseNotify} = $Data[8];
-        $Type{UpdateTime}          = $Data[9];
-        $Type{UpdateNotify}        = $Data[10];
-        $Type{SolutionTime}        = $Data[11];
-        $Type{SolutionNotify}      = $Data[12];
+        $Type{Calendar}            = $Data[7];
+        $Type{FirstResponseTime}   = $Data[8];
+        $Type{FirstResponseNotify} = $Data[9];
+        $Type{UpdateTime}          = $Data[10];
+        $Type{UpdateNotify}        = $Data[11];
+        $Type{SolutionTime}        = $Data[12];
+        $Type{SolutionNotify}      = $Data[13];
 # ---
     }
 
@@ -313,11 +315,13 @@ sub TypeUpdate {
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
         $Param{ $DefaultNullAttr } ||= 0;
     }
+    $Param{Calendar} ||= '';
+
     return if !$Self->{DBObject}->Do(
         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
-            . 'change_time = current_timestamp, change_by = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
+            . 'change_time = current_timestamp, change_by = ?, calendar_name = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID},  \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{ID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{ID},
         ],
     );
 # ---

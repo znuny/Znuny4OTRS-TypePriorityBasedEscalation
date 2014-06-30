@@ -34,6 +34,7 @@
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">
+            <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
             <ColumnAdd Name="first_response_time" Required="true" Type="INTEGER"/>
             <ColumnAdd Name="first_response_notify" Required="false" Type="SMALLINT"/>
             <ColumnAdd Name="update_time" Required="true" Type="INTEGER"/>
@@ -42,6 +43,7 @@
             <ColumnAdd Name="solution_notify" Required="false" Type="SMALLINT"/>
         </TableAlter>
         <TableAlter Name="ticket_type">
+            <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
             <ColumnAdd Name="first_response_time" Required="true" Type="INTEGER"/>
             <ColumnAdd Name="first_response_notify" Required="false" Type="SMALLINT"/>
             <ColumnAdd Name="update_time" Required="true" Type="INTEGER"/>
@@ -50,8 +52,17 @@
             <ColumnAdd Name="solution_notify" Required="false" Type="SMALLINT"/>
         </TableAlter>
     </DatabaseInstall>
+    <DatabaseUpgrade type="post">
+        <TableAlter Name="ticket_priority" Version="1.2.1">
+            <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
+        </TableAlter>
+        <TableAlter Name="ticket_type" Version="1.2.1">
+            <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
+        </TableAlter>
+    </DatabaseUpgrade>
     <DatabaseUninstall>
         <TableAlter Name="ticket_priority">
+            <ColumnDrop Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
             <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
             <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
             <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>
@@ -60,6 +71,7 @@
             <ColumnDrop Name="solution_notify" Required="false" Type="SMALLINT"/>
         </TableAlter>
         <TableAlter Name="ticket_type">
+            <ColumnDrop Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
             <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
             <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
             <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>

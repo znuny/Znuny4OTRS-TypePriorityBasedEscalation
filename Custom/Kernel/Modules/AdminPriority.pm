@@ -83,7 +83,7 @@ sub Run {
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
 #        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+        for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -170,7 +170,7 @@ sub Run {
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
 #        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+        for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -262,6 +262,22 @@ sub _Edit {
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
+    # generate CalendarOptionStrg
+    my %CalendarList;
+    for my $CalendarNumber ( '', 1 .. 50 ) {
+        if ( $Self->{ConfigObject}->Get("TimeVacationDays::Calendar$CalendarNumber") ) {
+            $CalendarList{$CalendarNumber} = "Calendar $CalendarNumber - "
+                . $Self->{ConfigObject}->Get( "TimeZone::Calendar" . $CalendarNumber . "Name" );
+        }
+    }
+    $Param{CalendarOptionStrg} = $Self->{LayoutObject}->BuildSelection(
+        Data         => \%CalendarList,
+        Name         => 'Calendar',
+        SelectedID   => $Param{Calendar},
+        Translation  => 0,
+        PossibleNone => 1,
+    );
+
     my %NotifyLevelList = (
         10 => '10%',
         20 => '20%',

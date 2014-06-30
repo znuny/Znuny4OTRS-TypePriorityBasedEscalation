@@ -118,6 +118,12 @@
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
+                        <label for="Calendar">$Text{"Calendar"}:</label>
+                        <div class="Field">
+                            $Data{"CalendarOptionStrg"}
+                        </div>
+                        <div class="Clear"></div>
+
                         <label for="FirstResponseTime">
                             $Text{"Escalation - first response time"} ($Text{"minutes"}):
                         </label>

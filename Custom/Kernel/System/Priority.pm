@@ -193,7 +193,7 @@ sub PriorityGet {
 #         Limit => 1,
 #     );
     return if !$Self->{DBObject}->Prepare(
-        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
+        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_priority WHERE id = ?',
         Bind  => [ \$Param{PriorityID} ],
         Limit => 1,
@@ -213,12 +213,13 @@ sub PriorityGet {
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-        $Data{FirstResponseTime}   = $Row[7];
-        $Data{FirstResponseNotify} = $Row[8];
-        $Data{UpdateTime}          = $Row[9];
-        $Data{UpdateNotify}        = $Row[10];
-        $Data{SolutionTime}        = $Row[11];
-        $Data{SolutionNotify}      = $Row[12];
+        $Data{Calendar}            = $Row[7];
+        $Data{FirstResponseTime}   = $Row[8];
+        $Data{FirstResponseNotify} = $Row[9];
+        $Data{UpdateTime}          = $Row[10];
+        $Data{UpdateNotify}        = $Row[11];
+        $Data{SolutionTime}        = $Row[12];
+        $Data{SolutionNotify}      = $Row[13];
 # ---
     }
 
@@ -269,11 +270,11 @@ sub PriorityAdd {
         $Param{ $DefaultNullAttr } ||= 0;
     }
     return if !$Self->{DBObject}->Do(
-        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
+        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . 'change_time, change_by) VALUES '
             . '(?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
         ],
     );
 # ---
@@ -342,11 +343,13 @@ sub PriorityUpdate {
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
         $Param{ $DefaultNullAttr } ||= 0;
     }
+    $Param{Calendar} ||= '';
+
     return if !$Self->{DBObject}->Do(
         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
-            . 'change_time = current_timestamp, change_by = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
+            . 'change_time = current_timestamp, change_by = ?, calendar_name = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID},  \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{PriorityID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{PriorityID},
         ],
     );
 # ---
