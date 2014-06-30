@@ -53,10 +53,10 @@
         </TableAlter>
     </DatabaseInstall>
     <DatabaseUpgrade type="post">
-        <TableAlter Name="ticket_priority" Version="1.2.1">
+        <TableAlter Name="ticket_priority" Version="1.2.2">
             <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
         </TableAlter>
-        <TableAlter Name="ticket_type" Version="1.2.1">
+        <TableAlter Name="ticket_type" Version="1.2.2">
             <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
         </TableAlter>
     </DatabaseUpgrade>
