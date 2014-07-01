@@ -16,7 +16,7 @@
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::System::Ticket::Event::TriggerEscalationStopEvents</Item>
-                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|ArticleCreate|TicketPriorityUpdate|OwnerUpdate</Item>
+                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -27,7 +27,7 @@
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::System::Ticket::Event::TicketEscalationIndex</Item>
-                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|TicketCreate|ArticleCreate|TicketPriorityUpdate|OwnerUpdate</Item>
+                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|TicketCreate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -53,6 +53,14 @@
                 <Item>Priority</Item>
                 <Item>Queue</Item>
             </Array>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Ticket::CustomModule###001-Znuny4OTRSTypePriorityBasedEscalation" Required="1" Valid="1">
+        <Description Translatable="1">This configuration registers a custom ticket module that overloads (redefines) existing functions in Kernel::System::Ticket to provide the Znuny4OTRS-TypePriorityBasedEscalation functionality.</Description>
+        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
+        <SubGroup>Core::Ticket</SubGroup>
+        <Setting>
+            <String Regex="">Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation</String>
         </Setting>
     </ConfigItem>
 </otrs_config>

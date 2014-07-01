@@ -1,11 +1,12 @@
-# Copyright (C) 2013 Znuny GmbH, http://znuny.com/
+# --
+# Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm - overwrite/redefines the ticket escalation functions and the owner set function
+# Copyright (C) 2014 Znuny GmbH, http://znuny.com/
+# --
+
+package Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation;
 
 use strict;
 use warnings;
-
-use Kernel::System::Ticket;
-
-use vars qw(@ISA);
 
 use Kernel::System::VariableCheck qw(:all);
 
@@ -194,6 +195,112 @@ sub Kernel::System::Ticket::_TicketGetFirstResponse {
         $Data{FirstResponseDiffInMin} = int( ( $EscalationFirstResponseTime - $WorkingTime ) / 60 );
     }
     return %Data;
+}
+
+sub Kernel::System::Ticket::TicketOwnerSet {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(TicketID UserID)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+    if ( !$Param{NewUserID} && !$Param{NewUser} ) {
+        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need NewUserID or NewUser!' );
+        return;
+    }
+
+    # lookup if no NewUserID is given
+    if ( !$Param{NewUserID} ) {
+        $Param{NewUserID} = $Self->{UserObject}->UserLookup( UserLogin => $Param{NewUser} );
+    }
+
+    # lookup if no NewUser is given
+    if ( !$Param{NewUser} ) {
+        $Param{NewUser} = $Self->{UserObject}->UserLookup( UserID => $Param{NewUserID} );
+    }
+
+    # check if update is needed!
+    my ( $OwnerID, $Owner ) = $Self->OwnerCheck( TicketID => $Param{TicketID} );
+    if ( $OwnerID eq $Param{NewUserID} ) {
+
+        # update is "not" needed!
+        return 2;
+    }
+
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalations
+# ---
+    # get current ticket
+    my %Ticket = $Self->TicketGet(
+        %Param,
+        DynamicFields => 0,
+    );
+# ---
+    # db update
+    return if !$Self->{DBObject}->Do(
+        SQL => 'UPDATE ticket SET '
+            . ' user_id = ?, change_time = current_timestamp, change_by = ? WHERE id = ?',
+        Bind => [ \$Param{NewUserID}, \$Param{UserID}, \$Param{TicketID} ],
+    );
+
+    # clear ticket cache
+    $Self->_TicketCacheClear( TicketID => $Param{TicketID} );
+
+    # add history
+    $Self->HistoryAdd(
+        TicketID     => $Param{TicketID},
+        CreateUserID => $Param{UserID},
+        HistoryType  => 'OwnerUpdate',
+        Name         => "\%\%$Param{NewUser}\%\%$Param{NewUserID}",
+    );
+
+    # send agent notify
+    if ( !$Param{SendNoNotification} ) {
+        if (
+            $Param{UserID} ne $Param{NewUserID}
+            && $Param{NewUserID} ne $Self->{ConfigObject}->Get('PostmasterUserID')
+            )
+        {
+
+            # send agent notification
+            $Self->SendAgentNotification(
+                Type                  => 'OwnerUpdate',
+                RecipientID           => $Param{NewUserID},
+                CustomerMessageParams => {
+                    %Param,
+                    Body => $Param{Comment} || '',
+                },
+                TicketID => $Param{TicketID},
+                UserID   => $Param{UserID},
+            );
+        }
+    }
+
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalations
+# ---
+#     # trigger event
+#     $Self->EventHandler(
+#         Event => 'TicketOwnerUpdate',
+#         Data  => {
+#             TicketID => $Param{TicketID},
+#         },
+#         UserID => $Param{UserID},
+#     );
+    # trigger event
+    $Self->EventHandler(
+        Event => 'TicketOwnerUpdate',
+        Data  => {
+            TicketID      => $Param{TicketID},
+            OldTicketData => \%Ticket,
+        },
+        UserID => $Param{UserID},
+    );
+# ---
+    return 1;
 }
 
 }

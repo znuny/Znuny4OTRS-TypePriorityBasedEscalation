@@ -29,10 +29,10 @@
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminType.pm"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
-        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminType.dtl"/>
+        <File Permission="644" Location="Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">

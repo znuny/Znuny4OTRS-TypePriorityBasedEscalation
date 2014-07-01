@@ -17,6 +17,7 @@ sub Data {
     $Self->{Translation}->{"First owner change"} = 'Erster Besitzerwechsel';
     $Self->{Translation}->{"First agent response"} = 'Erste Kundenantwort';
     $Self->{Translation}->{"This configuration defines in which order escalations should get checked and if configured applied to the ticket. Possible options are: 'SLA', 'Type', 'Priority' and 'Queue'. This configuration is key sensetive."} = "Diese Konfiguration definiert die Reihenfolge in der die Eskalation eines Tickets geprüft werden soll. Mögliche Werte sind 'SLA', 'Type', 'Priority' und 'Queue', bei deren Konfiguration auf Groß- und Kleinschreibung geachtet werden muss.";
+    $Self->{Translation}->{"This configuration registers a custom ticket module that overloads (redefines) existing functions in Kernel::System::Ticket to provide the Znuny4OTRS-TypePriorityBasedEscalation functionality."} = "Diese Konfiguration registriert ein Custom-Ticket-Modul, das Funktionen in Kernel::System::Ticket überschreibt (redefined) um die Znuny4OTRS-TypePriorityBasedEscalation Funktionalität bereitzustellen.";
 
     return 1;
 }
