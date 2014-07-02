@@ -303,6 +303,181 @@ sub Kernel::System::Ticket::TicketOwnerSet {
     return 1;
 }
 
+sub Kernel::System::Ticket::TicketTypeSet {
+    my ( $Self, %Param ) = @_;
+
+    # type lookup
+    if ( $Param{Type} && !$Param{TypeID} ) {
+        $Param{TypeID} = $Self->{TypeObject}->TypeLookup( Type => $Param{Type} );
+    }
+
+    # check needed stuff
+    for my $Needed (qw(TicketID TypeID UserID)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # get current ticket
+    my %Ticket = $Self->TicketGet(
+        %Param,
+        DynamicFields => 0,
+    );
+
+    # update needed?
+    return 1 if $Param{TypeID} == $Ticket{TypeID};
+
+    # permission check
+    my %TypeList = $Self->TicketTypeList(%Param);
+    if ( !$TypeList{ $Param{TypeID} } ) {
+        $Self->{LogObject}->Log(
+            Priority => 'notice',
+            Message  => "Permission denied on TicketID: $Param{TicketID}!",
+        );
+        return;
+    }
+
+    return if !$Self->{DBObject}->Do(
+        SQL => 'UPDATE ticket SET type_id = ?, change_time = current_timestamp, '
+            . ' change_by = ? WHERE id = ?',
+        Bind => [ \$Param{TypeID}, \$Param{UserID}, \$Param{TicketID} ],
+    );
+
+    # clear ticket cache
+    $Self->_TicketCacheClear( TicketID => $Param{TicketID} );
+
+    # get new ticket data
+    my %TicketNew = $Self->TicketGet(
+        %Param,
+        DynamicFields => 0,
+    );
+    $TicketNew{Type} = $TicketNew{Type} || 'NULL';
+    $Param{TypeID}   = $Param{TypeID}   || '';
+    $Ticket{Type}    = $Ticket{Type}    || 'NULL';
+    $Ticket{TypeID}  = $Ticket{TypeID}  || '';
+
+    # history insert
+    $Self->HistoryAdd(
+        TicketID    => $Param{TicketID},
+        HistoryType => 'TypeUpdate',
+        Name        => "\%\%$TicketNew{Type}\%\%$Param{TypeID}\%\%$Ticket{Type}\%\%$Ticket{TypeID}",
+        CreateUserID => $Param{UserID},
+    );
+
+    # trigger event
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalations
+# ---
+#     $Self->EventHandler(
+#         Event => 'TicketTypeUpdate',
+#         Data  => {
+#             TicketID => $Param{TicketID},
+#         },
+#         UserID => $Param{UserID},
+#     );
+    $Self->EventHandler(
+        Event => 'TicketTypeUpdate',
+        Data  => {
+            TicketID      => $Param{TicketID},
+            OldTicketData => \%Ticket,
+        },
+        UserID => $Param{UserID},
+    );
+# ---
+
+    return 1;
+}
+
+sub Kernel::System::Ticket::TicketPrioritySet {
+    my ( $Self, %Param ) = @_;
+
+    # lookup!
+    if ( !$Param{PriorityID} && $Param{Priority} ) {
+        $Param{PriorityID} = $Self->{PriorityObject}->PriorityLookup(
+            Priority => $Param{Priority},
+        );
+    }
+    if ( $Param{PriorityID} && !$Param{Priority} ) {
+        $Param{Priority} = $Self->{PriorityObject}->PriorityLookup(
+            PriorityID => $Param{PriorityID},
+        );
+    }
+
+    # check needed stuff
+    for my $Needed (qw(TicketID UserID PriorityID Priority)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+    my %Ticket = $Self->TicketGet(
+        %Param,
+        DynamicFields => 0,
+    );
+
+    # check if update is needed
+    if ( $Ticket{Priority} eq $Param{Priority} ) {
+
+        # update not needed
+        return 1;
+    }
+
+    # permission check
+    my %PriorityList = $Self->PriorityList(%Param);
+    if ( !$PriorityList{ $Param{PriorityID} } ) {
+        $Self->{LogObject}->Log(
+            Priority => 'notice',
+            Message  => "Permission denied on TicketID: $Param{TicketID}!",
+        );
+        return;
+    }
+
+    # db update
+    return if !$Self->{DBObject}->Do(
+        SQL => 'UPDATE ticket SET ticket_priority_id = ?, '
+            . ' change_time = current_timestamp, change_by = ?'
+            . ' WHERE id = ?',
+        Bind => [ \$Param{PriorityID}, \$Param{UserID}, \$Param{TicketID} ],
+    );
+
+    # clear ticket cache
+    $Self->_TicketCacheClear( TicketID => $Param{TicketID} );
+
+    # add history
+    $Self->HistoryAdd(
+        TicketID     => $Param{TicketID},
+        QueueID      => $Ticket{QueueID},
+        CreateUserID => $Param{UserID},
+        HistoryType  => 'PriorityUpdate',
+        Name         => "\%\%$Ticket{Priority}\%\%$Ticket{PriorityID}"
+            . "\%\%$Param{Priority}\%\%$Param{PriorityID}",
+    );
+
+    # trigger event
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalations
+# ---
+#     $Self->EventHandler(
+#         Event => 'TicketPriorityUpdate',
+#         Data  => {
+#             TicketID => $Param{TicketID},
+#         },
+#         UserID => $Param{UserID},
+#     );
+    $Self->EventHandler(
+        Event => 'TicketPriorityUpdate',
+        Data  => {
+            TicketID      => $Param{TicketID},
+            OldTicketData => \%Ticket,
+        },
+        UserID => $Param{UserID},
+    );
+# ---
+
+    return 1;
+}
+
 }
 
 1;
