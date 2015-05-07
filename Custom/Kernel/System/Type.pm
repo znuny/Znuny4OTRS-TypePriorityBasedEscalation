@@ -1,6 +1,9 @@
 # --
 # Kernel/System/Type.pm - All ticket type related functions
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
+# --
+# $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Type.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,8 +15,12 @@ package Kernel::System::Type;
 use strict;
 use warnings;
 
-use Kernel::System::CacheInternal;
-use Kernel::System::Valid;
+our @ObjectDependencies = (
+    'Kernel::System::Cache',
+    'Kernel::System::DB',
+    'Kernel::System::Log',
+    'Kernel::System::Valid',
+);
 
 =head1 NAME
 
@@ -33,39 +40,9 @@ All type functions.
 
 create an object
 
-    use Kernel::Config;
-    use Kernel::System::Encode;
-    use Kernel::System::Log;
-    use Kernel::System::Main;
-    use Kernel::System::DB;
-    use Kernel::System::Type;
-
-    my $ConfigObject = Kernel::Config->new();
-    my $EncodeObject = Kernel::System::Encode->new(
-        ConfigObject => $ConfigObject,
-    );
-    my $LogObject = Kernel::System::Log->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-    );
-    my $MainObject = Kernel::System::Main->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-    );
-    my $DBObject = Kernel::System::DB->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-        MainObject   => $MainObject,
-    );
-    my $TypeObject = Kernel::System::Type->new(
-        ConfigObject => $ConfigObject,
-        LogObject    => $LogObject,
-        DBObject     => $DBObject,
-        MainObject   => $MainObject,
-        EncodeObject => $EncodeObject,
-    );
+    use Kernel::System::ObjectManager;
+    local $Kernel::OM = Kernel::System::ObjectManager->new();
+    my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
 
 =cut
 
@@ -76,16 +53,8 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(DBObject ConfigObject LogObject MainObject EncodeObject)) {
-        $Self->{$_} = $Param{$_} || die "Got no $_!";
-    }
-    $Self->{ValidObject}         = Kernel::System::Valid->new( %{$Self} );
-    $Self->{CacheInternalObject} = Kernel::System::CacheInternal->new(
-        %{$Self},
-        Type => 'Type',
-        TTL  => 60 * 60 * 24 * 20,
-    );
+    $Self->{CacheType} = 'Type';
+    $Self->{CacheTTL}  = 60 * 60 * 24 * 20;
 
     return $Self;
 }
@@ -108,26 +77,39 @@ sub TypeAdd {
     # check needed stuff
     for (qw(Name ValidID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
+    # check if a type with this name already exists
+    if ( $Self->NameExistsCheck( Name => $Param{Name} ) ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "A type with name '$Param{Name}' already exists!"
+        );
+        return;
+    }
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Do(
-#         SQL => 'INSERT INTO ticket_type (name, valid_id, '
-#             . ' create_time, create_by, change_time, change_by)'
-#             . ' VALUES (?, ?, current_timestamp, ?, current_timestamp, ?)',
-#         Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID} ],
-#     );
+#    return if !$DBObject->Do(
+#        SQL => 'INSERT INTO ticket_type (name, valid_id, '
+#            . ' create_time, create_by, change_time, change_by)'
+#            . ' VALUES (?, ?, current_timestamp, ?, current_timestamp, ?)',
+#        Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID} ],
+#    );
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
         $Param{ $DefaultNullAttr } ||= 0;
     }
     $Param{Calendar} ||= '';
 
-    return if !$Self->{DBObject}->Do(
+    return if !$DBObject->Do(
         SQL => 'INSERT INTO ticket_type (name, valid_id, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . ' create_time, create_by, change_time, change_by)'
             . ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
@@ -136,7 +118,7 @@ sub TypeAdd {
 # ---
 
     # get new type id
-    return if !$Self->{DBObject}->Prepare(
+    return if !$DBObject->Prepare(
         SQL   => 'SELECT id FROM ticket_type WHERE name = ?',
         Bind  => [ \$Param{Name} ],
         Limit => 1,
@@ -144,13 +126,15 @@ sub TypeAdd {
 
     # fetch the result
     my $ID;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         $ID = $Row[0];
     }
     return if !$ID;
 
     # reset cache
-    $Self->{CacheInternalObject}->CleanUp();
+    $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+        Type => $Self->{CacheType},
+    );
 
     return $ID;
 }
@@ -186,7 +170,7 @@ sub TypeGet {
 
     # either ID or Name must be passed
     if ( !$Param{ID} && !$Param{Name} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need ID or Name!',
         );
@@ -195,7 +179,7 @@ sub TypeGet {
 
     # check that not both ID and Name are given
     if ( $Param{ID} && $Param{Name} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need either ID OR Name - not both!',
         );
@@ -208,7 +192,7 @@ sub TypeGet {
             Type => $Param{Name},
         );
         if ( !$Param{ID} ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "TypeID for Type '$Param{Name}' not found!",
             );
@@ -218,20 +202,26 @@ sub TypeGet {
 
     # check cache
     my $CacheKey = 'TypeGet::ID::' . $Param{ID};
-    my $Cache = $Self->{CacheInternalObject}->Get( Key => $CacheKey );
+    my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+        Type => $Self->{CacheType},
+        Key  => $CacheKey,
+    );
     return %{$Cache} if $Cache;
+
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
     # ask the database
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Prepare(
-#         SQL => 'SELECT id, name, valid_id, '
-#             . 'create_time, create_by, change_time, change_by '
-#             . 'FROM ticket_type WHERE id = ?',
-#         Bind => [ \$Param{ID} ],
-#     );
-    return if !$Self->{DBObject}->Prepare(
+#    return if !$DBObject->Prepare(
+#        SQL => 'SELECT id, name, valid_id, '
+#            . 'create_time, create_by, change_time, change_by '
+#            . 'FROM ticket_type WHERE id = ?',
+#        Bind => [ \$Param{ID} ],
+#    );
+    return if !$DBObject->Prepare(
         SQL => 'SELECT id, name, valid_id, '
             . 'create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_type WHERE id = ?',
@@ -241,7 +231,7 @@ sub TypeGet {
 
     # fetch the result
     my %Type;
-    while ( my @Data = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Data = $DBObject->FetchrowArray() ) {
         $Type{ID}         = $Data[0];
         $Type{Name}       = $Data[1];
         $Type{ValidID}    = $Data[2];
@@ -264,7 +254,7 @@ sub TypeGet {
 
     # no data found
     if ( !%Type ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "TypeID '$Param{ID}' not found!",
         );
@@ -272,7 +262,12 @@ sub TypeGet {
     }
 
     # set cache
-    $Self->{CacheInternalObject}->Set( Key => $CacheKey, Value => \%Type );
+    $Kernel::OM->Get('Kernel::System::Cache')->Set(
+        Type  => $Self->{CacheType},
+        TTL   => $Self->{CacheTTL},
+        Key   => $CacheKey,
+        Value => \%Type,
+    );
 
     return %Type;
 }
@@ -296,28 +291,45 @@ sub TypeUpdate {
     # check needed stuff
     for (qw(ID Name ValidID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
+    # check if a type with this name already exists
+    if (
+        $Self->NameExistsCheck(
+            Name => $Param{Name},
+            ID   => $Param{ID}
+        )
+        )
+    {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "A type with name '$Param{Name}' already exists!"
+        );
+        return;
+    }
     # sql
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Do(
-#         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
-#             . ' change_time = current_timestamp, change_by = ? WHERE id = ?',
-#         Bind => [
-#             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{ID},
-#         ],
-#     );
+#    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
+#        SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
+#            . ' change_time = current_timestamp, change_by = ? WHERE id = ?',
+#        Bind => [
+#            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{ID},
+#        ],
+#    );
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
         $Param{ $DefaultNullAttr } ||= 0;
     }
     $Param{Calendar} ||= '';
 
-    return if !$Self->{DBObject}->Do(
+    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
             . 'change_time = current_timestamp, change_by = ?, calendar_name = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
@@ -327,7 +339,9 @@ sub TypeUpdate {
 # ---
 
     # reset cache
-    $Self->{CacheInternalObject}->CleanUp();
+    $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+        Type => $Self->{CacheType},
+    );
 
     return 1;
 }
@@ -357,11 +371,14 @@ sub TypeList {
 
     # check cache
     my $CacheKey = "TypeList::Valid::$Valid";
-    my $Cache = $Self->{CacheInternalObject}->Get( Key => $CacheKey );
+    my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+        Type => $Self->{CacheType},
+        Key  => $CacheKey,
+    );
     return %{$Cache} if $Cache;
 
     # create the valid list
-    my $ValidIDs = join ', ', $Self->{ValidObject}->ValidIDsGet();
+    my $ValidIDs = join ', ', $Kernel::OM->Get('Kernel::System::Valid')->ValidIDsGet();
 
     # build SQL
     my $SQL = 'SELECT id, name FROM ticket_type';
@@ -371,19 +388,27 @@ sub TypeList {
         $SQL .= ' WHERE valid_id IN (' . $ValidIDs . ')';
     }
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # ask database
-    return if !$Self->{DBObject}->Prepare(
+    return if !$DBObject->Prepare(
         SQL => $SQL,
     );
 
     # fetch the result
     my %TypeList;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         $TypeList{ $Row[0] } = $Row[1];
     }
 
     # set cache
-    $Self->{CacheInternalObject}->Set( Key => $CacheKey, Value => \%TypeList );
+    $Kernel::OM->Get('Kernel::System::Cache')->Set(
+        Type  => $Self->{CacheType},
+        TTL   => $Self->{CacheTTL},
+        Key   => $CacheKey,
+        Value => \%TypeList,
+    );
 
     return %TypeList;
 }
@@ -403,7 +428,7 @@ sub TypeLookup {
 
     # check needed stuff
     if ( !$Param{Type} && !$Param{TypeID} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Got no Type or TypeID!',
         );
@@ -432,7 +457,7 @@ sub TypeLookup {
 
     # check if data exists
     if ( !defined $ReturnData ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "No $Key for $Value found!",
         );
@@ -442,6 +467,39 @@ sub TypeLookup {
     return $ReturnData;
 }
 
+=item NameExistsCheck()
+
+    return 1 if another type with this name already exits
+
+        $Exist = $TypeObject->NameExistsCheck(
+            Name => 'Some::Template',
+            ID => 1, # optional
+        );
+
+=cut
+
+sub NameExistsCheck {
+    my ( $Self, %Param ) = @_;
+
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+    return if !$DBObject->Prepare(
+        SQL  => 'SELECT id FROM ticket_type WHERE name = ?',
+        Bind => [ \$Param{Name} ],
+    );
+
+    # fetch the result
+    my $Flag;
+    while ( my @Row = $DBObject->FetchrowArray() ) {
+        if ( !$Param{ID} || $Param{ID} ne $Row[0] ) {
+            $Flag = 1;
+        }
+    }
+    if ($Flag) {
+        return 1;
+    }
+    return 0;
+}
 1;
 
 =back

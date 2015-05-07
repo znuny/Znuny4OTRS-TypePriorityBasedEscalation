@@ -1,6 +1,9 @@
 # --
 # Kernel/Modules/AdminType.pm - to add/update/delete ticket types
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
+# --
+# $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/Modules/AdminType.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -95,6 +98,17 @@ sub Run {
             );
         }
 
+        # check if a type exists with this name
+        my $NameExists = $Self->{TypeObject}->NameExistsCheck(
+            Name => $GetParam{Name},
+            ID   => $GetParam{ID}
+        );
+
+        if ($NameExists) {
+            $Errors{NameExists} = 1;
+            $Errors{'NameInvalid'} = 'ServerError';
+        }
+
         # if no errors occurred
         if ( !%Errors ) {
 
@@ -178,6 +192,13 @@ sub Run {
             if ( !$GetParam{$Needed} ) {
                 $Errors{ $Needed . 'Invalid' } = 'ServerError';
             }
+        }
+
+        # check if a type exists with this name
+        my $NameExists = $Self->{TypeObject}->NameExistsCheck( Name => $GetParam{Name} );
+        if ($NameExists) {
+            $Errors{NameExists} = 1;
+            $Errors{'NameInvalid'} = 'ServerError';
         }
 
         # if no errors occurred
@@ -310,7 +331,6 @@ sub _Edit {
         PossibleNone => 1,
     );
 # ---
-
     $Self->{LayoutObject}->Block(
         Name => 'OverviewUpdate',
         Data => {
@@ -327,6 +347,13 @@ sub _Edit {
         $Self->{LayoutObject}->Block( Name => 'HeaderAdd' );
     }
 
+    # show appropriate messages for ServerError
+    if ( defined $Param{Errors}->{NameExists} && $Param{Errors}->{NameExists} == 1 ) {
+        $Self->{LayoutObject}->Block( Name => 'ExistNameServerError' );
+    }
+    else {
+        $Self->{LayoutObject}->Block( Name => 'NameServerError' );
+    }
     return 1;
 }
 

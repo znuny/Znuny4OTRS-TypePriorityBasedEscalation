@@ -15,11 +15,7 @@ Service/SLA, Type, Priority, Queue
 
 - Znuny4OTRS-Repo
 
-- OTRS 3.1
-
-- OTRS 3.2
-
-- OTRS 3.3
+- OTRS 4.0
 
 **Installation**
 
@@ -42,4 +38,3 @@ Enjoy!
  Your Znuny Team!
 
  [http://znuny.com](http://znuny.com)
-
