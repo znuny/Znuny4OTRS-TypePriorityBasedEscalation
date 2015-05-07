@@ -249,7 +249,7 @@ sub PriorityAdd {
     return if !$DBObject->Do(
         SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . 'change_time, change_by) VALUES '
-            . '(?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
+            . '(?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
         Bind => [
             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
         ],

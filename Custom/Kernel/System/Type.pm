@@ -112,8 +112,8 @@ sub TypeAdd {
     return if !$DBObject->Do(
         SQL => 'INSERT INTO ticket_type (name, valid_id, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . ' create_time, create_by, change_time, change_by)'
-            . ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
-        Bind => [ \$Param{Name}, \$Param{ValidID}, $Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID}, \$Param{UserID} ],
+            . ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
+        Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID}, \$Param{UserID} ],
     );
 # ---
 
