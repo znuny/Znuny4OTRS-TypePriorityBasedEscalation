@@ -1,5 +1,6 @@
 # --
 # Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm - overwrite/redefines the ticket escalation functions and the owner set function
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
 # --
 # $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Ticket.pm
