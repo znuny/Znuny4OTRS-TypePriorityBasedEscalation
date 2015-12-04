@@ -1,9 +1,8 @@
 # --
-# Kernel/System/Priority.pm - all ticket priority functions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Priority.pm
+# $origin: https://github.com/OTRS/otrs/blob/d6d27d945587bb83ad5ef9b15cce1fec93de0a48/Kernel/System/Priority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -44,7 +43,7 @@ create an object
 
     use Kernel::System::ObjectManager;
     local $Kernel::OM = Kernel::System::ObjectManager->new();
-    my $LockObject = $Kernel::OM->Get('Kernel::System::Priority');
+    my $PriorityObject = $Kernel::OM->Get('Kernel::System::Priority');
 
 
 =cut
@@ -157,6 +156,7 @@ sub PriorityGet {
     return %{$Cache} if $Cache;
 
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # ask database
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
@@ -232,6 +232,7 @@ sub PriorityAdd {
     }
 
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
@@ -313,6 +314,7 @@ sub PriorityUpdate {
     }
 
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---

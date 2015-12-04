@@ -1,9 +1,8 @@
 # --
-# Kernel/System/Type.pm - All ticket type related functions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Type.pm
+# $origin: https://github.com/OTRS/otrs/blob/5a8c531f122fbf9019cc08e5b2965a2f2ba0e469/Kernel/System/Type.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -84,6 +83,7 @@ sub TypeAdd {
             return;
         }
     }
+
     # check if a type with this name already exists
     if ( $Self->NameExistsCheck( Name => $Param{Name} ) ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
@@ -95,6 +95,7 @@ sub TypeAdd {
 
     # get database object
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
@@ -248,8 +249,7 @@ sub TypeGet {
         $Type{UpdateTime}          = $Data[10];
         $Type{UpdateNotify}        = $Data[11];
         $Type{SolutionTime}        = $Data[12];
-        $Type{SolutionNotify}      = $Data[13];
-# ---
+
     }
 
     # no data found
@@ -313,6 +313,7 @@ sub TypeUpdate {
         );
         return;
     }
+
     # sql
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation

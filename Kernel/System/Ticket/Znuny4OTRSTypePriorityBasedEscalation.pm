@@ -1,9 +1,8 @@
 # --
-# Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm - overwrite/redefines the ticket escalation functions and the owner set function
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Ticket.pm
+# $origin: https://github.com/OTRS/otrs/blob/40b53ef477ff3c44abba98c0310dfc74b4b707ec/Kernel/System/Ticket.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -43,6 +42,10 @@ our $ObjectManagerDisabled = 1;
 
         # get escalation properties
         my %Escalation;
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#
         my $EscalationOrder = $Kernel::OM->Get('Kernel::Config')->Get('EscalationOrder');
         if ( !IsArrayRefWithData($EscalationOrder) ) {
             $EscalationOrder = [ 'SLA', 'Type', 'Priority', 'Queue' ];
@@ -115,7 +118,7 @@ our $ObjectManagerDisabled = 1;
             last ATTRIBUTE
                 if ( $Escalation{FirstResponseTime} || $Escalation{UpdateTime} || $Escalation{SolutionTime} );
         }
-
+# ---
         return %Escalation;
     }
 
@@ -298,25 +301,28 @@ our $ObjectManagerDisabled = 1;
 
         # send agent notify
         if ( !$Param{SendNoNotification} ) {
-            if (
-                $Param{UserID} ne $Param{NewUserID}
-                && $Param{NewUserID} ne $Kernel::OM->Get('Kernel::Config')->Get('PostmasterUserID')
-                )
-            {
 
-                # send agent notification
-                $Self->SendAgentNotification(
-                    Type                  => 'OwnerUpdate',
-                    RecipientID           => $Param{NewUserID},
+            my @SkipRecipients;
+            if ( $Param{UserID} eq $Param{NewUserID} ) {
+                @SkipRecipients = [ $Param{UserID} ];
+            }
+
+            # trigger notification event
+            $Self->EventHandler(
+                Event => 'NotificationOwnerUpdate',
+                Data  => {
+                    TicketID              => $Param{TicketID},
+                    SkipRecipients        => \@SkipRecipients,
                     CustomerMessageParams => {
                         %Param,
                         Body => $Param{Comment} || '',
                     },
-                    TicketID => $Param{TicketID},
-                    UserID   => $Param{UserID},
-                );
-            }
+                },
+                UserID => $Param{UserID},
+            );
+
         }
+
 
         # trigger event
         $Self->EventHandler(
