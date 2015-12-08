@@ -294,12 +294,12 @@ sub _Edit {
     # generate CalendarOptionStrg
     my %CalendarList;
     for my $CalendarNumber ( '', 1 .. 50 ) {
-        if ( $Self->{ConfigObject}->Get("TimeVacationDays::Calendar$CalendarNumber") ) {
+        if ( $Kernel::OM->Get('Kernel::Config')->Get("TimeVacationDays::Calendar$CalendarNumber") ) {
             $CalendarList{$CalendarNumber} = "Calendar $CalendarNumber - "
-                . $Self->{ConfigObject}->Get( "TimeZone::Calendar" . $CalendarNumber . "Name" );
+                . $Kernel::OM->Get('Kernel::Config')->Get( "TimeZone::Calendar" . $CalendarNumber . "Name" );
         }
     }
-    $Param{CalendarOptionStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{CalendarOptionStrg} = $LayoutObject->BuildSelection(
         Data         => \%CalendarList,
         Name         => 'Calendar',
         SelectedID   => $Param{Calendar},
@@ -318,21 +318,21 @@ sub _Edit {
         80 => '80%',
         90 => '90%',
     );
-    $Param{FirstResponseNotifyOptionStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{FirstResponseNotifyOptionStrg} = $LayoutObject->BuildSelection(
         Data         => \%NotifyLevelList,
         Translation  => 0,
         Name         => 'FirstResponseNotify',
         SelectedID   => $Param{FirstResponseNotify},
         PossibleNone => 1,
     );
-    $Param{UpdateNotifyOptionStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{UpdateNotifyOptionStrg} = $LayoutObject->BuildSelection(
         Data         => \%NotifyLevelList,
         Translation  => 0,
         Name         => 'UpdateNotify',
         SelectedID   => $Param{UpdateNotify},
         PossibleNone => 1,
     );
-    $Param{SolutionNotifyOptionStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{SolutionNotifyOptionStrg} = $LayoutObject->BuildSelection(
         Data         => \%NotifyLevelList,
         Translation  => 0,
         Name         => 'SolutionNotify',
