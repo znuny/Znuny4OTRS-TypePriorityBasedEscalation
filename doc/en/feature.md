@@ -9,9 +9,9 @@ Service/SLA, Type, Priority, Queue
 ## Feature List
 
 * Allows you to define escalation attributes for ticket types via the admin interface.
-  [Screenshot Types](doc/en/type.png)
+![Screenshot Types](doc/en/type.png)
 * Allows you to define escalation attributes for ticket priorities via the admin interface.
-  [Screenshot Priority](doc/en/priority.png)
+![Screenshot Priority](doc/en/priority.png)
 
 ## Configuration
 
