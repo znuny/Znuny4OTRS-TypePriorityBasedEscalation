@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
     <Name>Znuny4OTRS-TypePriorityBasedEscalation</Name>
-    <Version>1.3.2</Version>
+    <Version>1.4.1</Version>
+    <ChangeLog Version="1.4.1" Date="2016-02-11 17:43:00 UTC">Ported to OTRS 5.</ChangeLog>
     <Framework>5.0.x</Framework>
     <PackageRequired Version="3.0.0">Znuny4OTRS-Repo</PackageRequired>
     <Vendor>Znuny GmbH</Vendor>
