@@ -1,4 +1,4 @@
-![Znuny logo](http://znuny.com/assets/logo_small.png)
+![Znuny logo](http://znuny.com/assets/images/logo_small.png)
 
 
 Znuny4OTRS - Type and priority based escalation
