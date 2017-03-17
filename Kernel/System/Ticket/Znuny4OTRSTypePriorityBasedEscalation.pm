@@ -139,9 +139,9 @@ our $ObjectManagerDisabled = 1;
         # get database object
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
-#---
-# Znuny4OTRS-TypePriorityBasedEscalations
-#---
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
 #    # check if first response is already done
 #    return if !$DBObject->Prepare(
 #        SQL => 'SELECT a.create_time,a.id FROM article a, article_sender_type ast, article_type art'
@@ -178,7 +178,7 @@ our $ObjectManagerDisabled = 1;
             Bind  => [ \$Param{TicketID} ],
             Limit => 1,
         );
-#---
+# ---
         my %Data;
         while ( my @Row = $DBObject->FetchrowArray() ) {
             $Data{FirstResponse} = $Row[0];
@@ -273,7 +273,7 @@ our $ObjectManagerDisabled = 1;
         }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
         # get current ticket
         my %Ticket = $Self->TicketGet(
@@ -330,7 +330,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
@@ -412,7 +412,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
@@ -500,7 +500,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
