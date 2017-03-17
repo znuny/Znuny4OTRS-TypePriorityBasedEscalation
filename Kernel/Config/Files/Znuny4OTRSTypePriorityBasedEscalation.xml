@@ -16,7 +16,7 @@
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::System::Ticket::Event::TriggerEscalationStopEvents</Item>
-                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
+                <Item Key="Event">TicketTypeUpdate|TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -27,7 +27,7 @@
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::System::Ticket::Event::TicketEscalationIndex</Item>
-                <Item Key="Event">TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|TicketCreate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
+                <Item Key="Event">TicketTypeUpdate|TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|TicketCreate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
             </Hash>
         </Setting>
     </ConfigItem>
