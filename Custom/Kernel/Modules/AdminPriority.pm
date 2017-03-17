@@ -1,6 +1,6 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
-# Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
 # $origin: https://github.com/OTRS/otrs/blob/4acf480a361f3a8cf6d34e5ce204d3b41cceba74/Kernel/Modules/AdminPriority.pm
 # --

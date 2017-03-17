@@ -1,6 +1,6 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
-# Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
 # $origin: https://github.com/OTRS/otrs/blob/40b53ef477ff3c44abba98c0310dfc74b4b707ec/Kernel/System/Ticket.pm
 # --
