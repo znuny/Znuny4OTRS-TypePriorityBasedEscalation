@@ -1,7 +1,6 @@
 # --
-# Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm - overwrite/redefines the ticket escalation functions and the owner set function
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
-# Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
 # $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Ticket.pm
 # --
@@ -136,9 +135,9 @@ our $ObjectManagerDisabled = 1;
         # get database object
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
-#---
-# Znuny4OTRS-TypePriorityBasedEscalations
-#---
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
 #    # check if first response is already done
 #    return if !$DBObject->Prepare(
 #        SQL => 'SELECT a.create_time,a.id FROM article a, article_sender_type ast, article_type art'
@@ -175,7 +174,7 @@ our $ObjectManagerDisabled = 1;
             Bind  => [ \$Param{TicketID} ],
             Limit => 1,
         );
-#---
+# ---
         my %Data;
         while ( my @Row = $DBObject->FetchrowArray() ) {
             $Data{FirstResponse} = $Row[0];
@@ -270,7 +269,7 @@ our $ObjectManagerDisabled = 1;
         }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
         # get current ticket
         my %Ticket = $Self->TicketGet(
@@ -324,7 +323,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
@@ -406,7 +405,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
@@ -494,7 +493,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---

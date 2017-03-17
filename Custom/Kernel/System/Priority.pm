@@ -1,7 +1,6 @@
 # --
-# Kernel/System/Priority.pm - all ticket priority functions
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
-# Copyright (C) 2012-2015 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
 # $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Priority.pm
 # --
@@ -16,7 +15,11 @@ use strict;
 use warnings;
 
 our @ObjectDependencies = (
-    'Kernel::Config',
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#     'Kernel::Config',
+# ---
     'Kernel::System::Cache',
     'Kernel::System::DB',
     'Kernel::System::Log',
