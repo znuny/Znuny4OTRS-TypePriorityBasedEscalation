@@ -15,7 +15,11 @@ use strict;
 use warnings;
 
 our @ObjectDependencies = (
-    'Kernel::Config',
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#     'Kernel::Config',
+# ---
     'Kernel::System::Cache',
     'Kernel::System::DB',
     'Kernel::System::Log',
