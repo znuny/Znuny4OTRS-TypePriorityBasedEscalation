@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 5a8c531f122fbf9019cc08e5b2965a2f2ba0e469 - Kernel/System/Type.pm
+# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/System/Type.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,6 +15,12 @@ use strict;
 use warnings;
 
 our @ObjectDependencies = (
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
+#     'Kernel::Config',
+#     'Kernel::System::SysConfig',
+# ---
     'Kernel::System::Cache',
     'Kernel::System::DB',
     'Kernel::System::Log',
@@ -25,22 +31,16 @@ our @ObjectDependencies = (
 
 Kernel::System::Type - type lib
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 All type functions.
 
 =head1 PUBLIC INTERFACE
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 create an object
 
-    use Kernel::System::ObjectManager;
-    local $Kernel::OM = Kernel::System::ObjectManager->new();
     my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
 
 =cut
@@ -58,7 +58,7 @@ sub new {
     return $Self;
 }
 
-=item TypeAdd()
+=head2 TypeAdd()
 
 add a new ticket type
 
@@ -88,7 +88,7 @@ sub TypeAdd {
     if ( $Self->NameExistsCheck( Name => $Param{Name} ) ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => "A type with name '$Param{Name}' already exists!"
+            Message  => "A type with the name '$Param{Name}' already exists.",
         );
         return;
     }
@@ -140,7 +140,7 @@ sub TypeAdd {
     return $ID;
 }
 
-=item TypeGet()
+=head2 TypeGet()
 
 get types attributes
 
@@ -272,7 +272,7 @@ sub TypeGet {
     return %Type;
 }
 
-=item TypeUpdate()
+=head2 TypeUpdate()
 
 update type attributes
 
@@ -309,7 +309,7 @@ sub TypeUpdate {
     {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => "A type with name '$Param{Name}' already exists!"
+            Message  => "A type with the name '$Param{Name}' already exists.",
         );
         return;
     }
@@ -347,7 +347,7 @@ sub TypeUpdate {
     return 1;
 }
 
-=item TypeList()
+=head2 TypeList()
 
 get type list
 
@@ -414,7 +414,7 @@ sub TypeList {
     return %TypeList;
 }
 
-=item TypeLookup()
+=head2 TypeLookup()
 
 get id or name for a ticket type
 
@@ -468,7 +468,7 @@ sub TypeLookup {
     return $ReturnData;
 }
 
-=item NameExistsCheck()
+=head2 NameExistsCheck()
 
     return 1 if another type with this name already exits
 
@@ -501,9 +501,8 @@ sub NameExistsCheck {
     }
     return 0;
 }
-1;
 
-=back
+1;
 
 =head1 TERMS AND CONDITIONS
 

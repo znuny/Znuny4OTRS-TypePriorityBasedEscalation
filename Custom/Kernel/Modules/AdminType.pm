@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 95f155bfbca2c675a4f88ed61a64e55fe11cccdb - Kernel/Modules/AdminType.pm
+# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/Modules/AdminType.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,6 +13,9 @@ package Kernel::Modules::AdminType;
 
 use strict;
 use warnings;
+
+use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -29,6 +32,13 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    # Store last entity screen.
+    $Kernel::OM->Get('Kernel::System::AuthSession')->UpdateSessionID(
+        SessionID => $Self->{SessionID},
+        Key       => 'LastScreenEntity',
+        Value     => $Self->{RequestedURL},
+    );
+
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
     my $TypeObject   = $Kernel::OM->Get('Kernel::System::Type');
@@ -41,7 +51,7 @@ sub Run {
         my %Data = $TypeObject->TypeGet( ID => $ID );
         if ( !%Data ) {
             return $LayoutObject->ErrorScreen(
-                Message => 'Need Type!',
+                Message => Translatable('Need Type!'),
             );
         }
         my $Output = $LayoutObject->Header();
@@ -87,7 +97,7 @@ sub Run {
         my %Data = $TypeObject->TypeGet( ID => $GetParam{ID} );
         if ( !%Data ) {
             return $LayoutObject->ErrorScreen(
-                Message => 'Need Type!',
+                Message => Translatable('Need Type!'),
             );
         }
 
@@ -102,6 +112,34 @@ sub Run {
             $Errors{'NameInvalid'} = 'ServerError';
         }
 
+        # Check if type is present in SysConfig setting
+        my $UpdateEntity    = $ParamObject->GetParam( Param => 'UpdateEntity' ) || '';
+        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+        my %TypeOldData     = %Data;
+        my @IsTypeInSysConfig;
+        @IsTypeInSysConfig = $SysConfigObject->ConfigurationEntityCheck(
+            EntityType => 'Type',
+            EntityName => $Data{Name},
+        );
+        if (@IsTypeInSysConfig) {
+
+            # An entity present in SysConfig couldn't be invalidated.
+            if (
+                $Kernel::OM->Get('Kernel::System::Valid')->ValidLookup( ValidID => $GetParam{ValidID} )
+                ne 'valid'
+                )
+            {
+                $Errors{ValidIDInvalid}         = 'ServerError';
+                $Errors{ValidOptionServerError} = 'InSetting';
+            }
+
+            # In case changing name an authorization (UpdateEntity) should be send
+            elsif ( $Data{Name} ne $GetParam{Name} && !$UpdateEntity ) {
+                $Errors{NameInvalid}              = 'ServerError';
+                $Errors{InSettingNameServerError} = 'InSetting';
+            }
+        }
+
         # if no errors occurred
         if ( !%Errors ) {
 
@@ -110,17 +148,61 @@ sub Run {
                 %GetParam,
                 UserID => $Self->{UserID}
             );
+
             if ($Update) {
-                $Self->_Overview();
-                my $Output = $LayoutObject->Header();
-                $Output .= $LayoutObject->NavigationBar();
-                $Output .= $LayoutObject->Notify( Info => 'Type updated!' );
-                $Output .= $LayoutObject->Output(
-                    TemplateFile => 'AdminType',
-                    Data         => \%Param,
-                );
-                $Output .= $LayoutObject->Footer();
-                return $Output;
+
+                if (
+                    @IsTypeInSysConfig
+                    && $TypeOldData{Name} ne $GetParam{Name}
+                    && $UpdateEntity
+                    )
+                {
+                    SETTING:
+                    for my $SettingName (@IsTypeInSysConfig) {
+
+                        my %Setting = $SysConfigObject->SettingGet(
+                            Name => $SettingName,
+                        );
+
+                        next SETTING if !IsHashRefWithData( \%Setting );
+
+                        $Setting{EffectiveValue} =~ s/$TypeOldData{Name}/$GetParam{Name}/g;
+
+                        my $ExclusiveLockGUID = $SysConfigObject->SettingLock(
+                            Name   => $Setting{Name},
+                            Force  => 1,
+                            UserID => $Self->{UserID}
+                        );
+                        $Setting{ExclusiveLockGUID} = $ExclusiveLockGUID;
+
+                        my %UpdateSuccess = $SysConfigObject->SettingUpdate(
+                            %Setting,
+                            UserID => $Self->{UserID},
+                        );
+                    }
+
+                    $SysConfigObject->ConfigurationDeploy(
+                        Comments      => "Type name change",
+                        DirtySettings => \@IsTypeInSysConfig,
+                        UserID        => $Self->{UserID},
+                        Force         => 1,
+                    );
+                }
+
+                # if the user would like to continue editing the type, just redirect to the edit screen
+                if (
+                    defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+                    && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+                    )
+                {
+                    my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Subaction=Change;ID=$ID" );
+                }
+                else {
+
+                    # otherwise return to overview
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+                }
             }
         }
 
@@ -146,6 +228,7 @@ sub Run {
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Add' ) {
         my %GetParam = ();
+
         $GetParam{Name} = $ParamObject->GetParam( Param => 'Name' );
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
@@ -206,7 +289,7 @@ sub Run {
                 $Self->_Overview();
                 my $Output = $LayoutObject->Header();
                 $Output .= $LayoutObject->NavigationBar();
-                $Output .= $LayoutObject->Notify( Info => 'Type added!' );
+                $Output .= $LayoutObject->Notify( Info => Translatable('Type added!') );
                 $Output .= $LayoutObject->Output(
                     TemplateFile => 'AdminType',
                     Data         => \%Param,
@@ -248,7 +331,7 @@ sub Run {
                 Data     => $LayoutObject->{LanguageObject}->Translate( "Please activate %s first!", "Type" ),
                 Link =>
                     $LayoutObject->{Baselink}
-                    . 'Action=AdminSysConfig;Subaction=Edit;SysConfigGroup=Ticket;SysConfigSubGroup=Core::Ticket#Ticket::Type',
+                    . 'Action=AdminSystemConfiguration;Subaction=View;Setting=Ticket%3A%3AType',
             );
         }
 
@@ -349,14 +432,6 @@ sub _Edit {
         },
     );
 
-    # shows header
-    if ( $Param{Action} eq 'Change' ) {
-        $LayoutObject->Block( Name => 'HeaderEdit' );
-    }
-    else {
-        $LayoutObject->Block( Name => 'HeaderAdd' );
-    }
-
     # show appropriate messages for ServerError
     if ( defined $Param{Errors}->{NameExists} && $Param{Errors}->{NameExists} == 1 ) {
         $LayoutObject->Block( Name => 'ExistNameServerError' );
@@ -364,6 +439,64 @@ sub _Edit {
     else {
         $LayoutObject->Block( Name => 'NameServerError' );
     }
+
+    # Several error messages can be used for Name.
+    $Param{Errors}->{InSettingNameServerError} //= 'Required';
+    $LayoutObject->Block(
+        Name => $Param{Errors}->{InSettingNameServerError} . 'NameServerError',
+    );
+
+    # Several error messages can be used for Valid option.
+    $Param{Errors}->{ValidOptionServerError} //= 'Required';
+    $LayoutObject->Block(
+        Name => $Param{Errors}->{ValidOptionServerError} . 'ValidOptionServerError',
+    );
+
+    if ( $Param{ID} ) {
+
+        my $TypeName = $Kernel::OM->Get('Kernel::System::Type')->TypeLookup( TypeID => $Param{ID} );
+
+        # Add warning in case the Type belongs a SysConfig setting.
+        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+
+        # In case dirty setting, disable form.
+        my $IsDirtyConfig = 0;
+        my @IsDirtyResult = $SysConfigObject->ConfigurationDirtySettingsList();
+        my %IsDirtyList   = map { $_ => 1 } @IsDirtyResult;
+
+        my @IsTypeInSysConfig = $SysConfigObject->ConfigurationEntityCheck(
+            EntityType => 'Type',
+            EntityName => $TypeName // '',
+        );
+        if (@IsTypeInSysConfig) {
+            $LayoutObject->Block(
+                Name => 'TypeInSysConfig',
+                Data => {
+                    OldName => $TypeName,
+                },
+            );
+            for my $SettingName (@IsTypeInSysConfig) {
+                $LayoutObject->Block(
+                    Name => 'TypeInSysConfigRow',
+                    Data => {
+                        SettingName => $SettingName,
+                    },
+                );
+
+                # Verify if dirty setting.
+                if ( $IsDirtyList{$SettingName} ) {
+                    $IsDirtyConfig = 1;
+                }
+            }
+        }
+
+        if ($IsDirtyConfig) {
+            $LayoutObject->Block(
+                Name => 'TypeInSysConfigDirty',
+            );
+        }
+    }
+
     return 1;
 }
 
@@ -379,6 +512,7 @@ sub _Overview {
 
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'Filter' );
 
     $LayoutObject->Block(
         Name => 'OverviewResult',

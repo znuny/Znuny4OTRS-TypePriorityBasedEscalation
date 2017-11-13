@@ -1,66 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<otrs_config version="1.0" init="Changes">
-    <ConfigItem Name="TypeBasedPriorityEscalation" Required="0" Valid="0">
+<otrs_config version="2.0" init="Changes">
+    <Setting Name="TypeBasedPriorityEscalation" Required="0" Valid="0">
         <Description Translatable="1">This configuration defines a list of ticket types to which the priority based escalation should be restricted. Only tickets with a ticket type of this list will get checked for priority based escalation. All tickets will escalate priority based if this configuration is deactivated or has no types configured.</Description>
-        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
-        <SubGroup>Core</SubGroup>
-        <Setting>
+        <Navigation>Core::Znuny4OTRS::TypePriorityBasedEscalation</Navigation>
+        <Value>
             <Array>
             </Array>
-        </Setting>
-    </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###900-EscalationStopEvents" Required="0" Valid="1">
+        </Value>
+    </Setting>
+    <Setting Name="Ticket::EventModulePost###900-EscalationStopEvents" Required="0" Valid="1">
         <Description Translatable="1">Ticket event module that triggers the escalation stop events.</Description>
-        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
-        <SubGroup>Core::Ticket</SubGroup>
-        <Setting>
+        <Navigation>Core::Event::Ticket</Navigation>
+        <Value>
             <Hash>
                 <Item Key="Module">Kernel::System::Ticket::Event::TriggerEscalationStopEvents</Item>
                 <Item Key="Event">TicketTypeUpdate|TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
             </Hash>
-        </Setting>
-    </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###900-EscalationIndex" Required="0" Valid="1">
+        </Value>
+    </Setting>
+    <Setting Name="Ticket::EventModulePost###900-EscalationIndex" Required="0" Valid="1">
         <Description Translatable="1">Updates the ticket escalation index after a ticket attribute got updated.</Description>
-        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
-        <SubGroup>Core::Ticket</SubGroup>
-        <Setting>
+        <Navigation>Core::Event::Ticket</Navigation>
+        <Value>
             <Hash>
                 <Item Key="Module">Kernel::System::Ticket::Event::TicketEscalationIndex</Item>
                 <Item Key="Event">TicketTypeUpdate|TicketSLAUpdate|TicketQueueUpdate|TicketStateUpdate|TicketCreate|ArticleCreate|TicketPriorityUpdate|TicketOwnerUpdate</Item>
             </Hash>
-        </Setting>
-    </ConfigItem>
-    <ConfigItem Name="FirstResponseDecisionBase" Required="0" Valid="1">
+        </Value>
+    </Setting>
+    <Setting Name="FirstResponseDecisionBase" Required="0" Valid="1">
         <Description Translatable="1">This configuration defines if the first response time should be calculated based on the first owner change or the first agent response.</Description>
-        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
-        <SubGroup>Core</SubGroup>
-        <Setting>
-            <Option SelectedID="Agent">
-                <Item Key="Owner">First owner change</Item>
-                <Item Key="Agent">First agent response</Item>
-            </Option>
-        </Setting>
-    </ConfigItem>
-    <ConfigItem Name="EscalationOrder" Required="0" Valid="1">
+        <Navigation>Core::Znuny4OTRS::TypePriorityBasedEscalation</Navigation>
+        <Value>
+            <Item ValueType="Select" SelectedID="Agent">
+                <Item ValueType="Option" Value="Owner">First owner change</Item>
+                <Item ValueType="Option" Value="Agent">First agent response</Item>
+            </Item>
+        </Value>
+    </Setting>
+    <Setting Name="EscalationOrder" Required="0" Valid="1">
         <Description Translatable="1">This configuration defines in which order escalations should get checked and if configured applied to the ticket. Possible options are: SLA, Type, Priority and Queue. This configuration is key sensetive.</Description>
-        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
-        <SubGroup>Core</SubGroup>
-        <Setting>
+        <Navigation>Core::Znuny4OTRS::TypePriorityBasedEscalation</Navigation>
+        <Value>
             <Array>
                 <Item>SLA</Item>
                 <Item>Type</Item>
                 <Item>Priority</Item>
                 <Item>Queue</Item>
             </Array>
-        </Setting>
-    </ConfigItem>
-    <ConfigItem Name="Ticket::CustomModule###001-Znuny4OTRSTypePriorityBasedEscalation" Required="1" Valid="1">
+        </Value>
+    </Setting>
+    <Setting Name="Ticket::CustomModule###001-Znuny4OTRSTypePriorityBasedEscalation" Required="1" Valid="1">
         <Description Translatable="1">This configuration registers a custom ticket module that overloads (redefines) existing functions in Kernel::System::Ticket to provide the Znuny4OTRS-TypePriorityBasedEscalation functionality.</Description>
-        <Group>Znuny4OTRS-TypePriorityBasedEscalation</Group>
-        <SubGroup>Core::Ticket</SubGroup>
-        <Setting>
-            <String Regex="">Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation</String>
-        </Setting>
-    </ConfigItem>
+        <Navigation>Core::Ticket</Navigation>
+        <Value>
+            <Item ValueType="String" ValueRegex="">Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation</Item>
+        </Value>
+    </Setting>
 </otrs_config>

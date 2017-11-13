@@ -15,7 +15,7 @@ Service/SLA, Type, Priority, Queue
 
 - Znuny4OTRS-Repo
 
-- OTRS 5.0
+- OTRS 6
 
 **Installation**
 
