@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/d6d27d945587bb83ad5ef9b15cce1fec93de0a48/Kernel/System/Priority.pm
+# $origin: otrs - d6d27d945587bb83ad5ef9b15cce1fec93de0a48 - Kernel/System/Priority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
