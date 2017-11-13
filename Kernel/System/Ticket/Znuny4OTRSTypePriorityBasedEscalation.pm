@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 40b53ef477ff3c44abba98c0310dfc74b4b707ec - Kernel/System/Ticket.pm
+# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/System/Ticket.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -142,16 +142,19 @@ our $ObjectManagerDisabled = 1;
 # ---
 # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#    # check if first response is already done
-#    return if !$DBObject->Prepare(
-#        SQL => 'SELECT a.create_time,a.id FROM article a, article_sender_type ast, article_type art'
-#            . ' WHERE a.article_sender_type_id = ast.id AND a.article_type_id = art.id AND'
-#            . ' a.ticket_id = ? AND ast.name = \'agent\' AND'
-#            . ' (art.name LIKE \'email-ext%\' OR art.name LIKE \'note-ext%\' OR art.name = \'phone\' OR art.name = \'fax\' OR art.name = \'sms\')'
-#            . ' ORDER BY a.create_time',
-#        Bind  => [ \$Param{TicketID} ],
-#        Limit => 1,
-#    );
+#         # check if first response is already done
+#         return if !$DBObject->Prepare(
+#             SQL => '
+#                 SELECT a.create_time,a.id FROM article a, article_sender_type ast
+#                 WHERE a.article_sender_type_id = ast.id
+#                     AND a.ticket_id = ?
+#                     AND ast.name = ?
+#                     AND a.is_visible_for_customer = ?
+#                 ORDER BY a.create_time',
+#             Bind  => [ \$Param{TicketID}, \'agent', \1 ],
+#             Limit => 1,
+#         );
+
         my $FirstResponseSQL;
         my $FirstResponseReset = $Kernel::OM->Get('Kernel::Config')->Get('FirstResponseDecisionBase');
         if (
@@ -165,11 +168,13 @@ our $ObjectManagerDisabled = 1;
                 . " ORDER BY th.create_time";
         }
         else {
-            $FirstResponseSQL = 'SELECT a.create_time,a.id FROM article a, article_sender_type ast, article_type art'
-                . ' WHERE a.article_sender_type_id = ast.id AND a.article_type_id = art.id AND'
-                . ' a.ticket_id = ? AND ast.name = \'agent\' AND'
-                . ' (art.name LIKE \'email-ext%\' OR art.name LIKE \'note-ext%\' OR art.name = \'phone\' OR art.name = \'fax\' OR art.name = \'sms\')'
-                . ' ORDER BY a.create_time';
+            $FirstResponseSQL = '
+                SELECT a.create_time,a.id FROM article a, article_sender_type ast
+                WHERE a.article_sender_type_id = ast.id
+                    AND a.ticket_id = ?
+                    AND ast.name = \'agent\'
+                    AND a.is_visible_for_customer = 1
+                ORDER BY a.create_time';
         }
 
         # check if first response is already done
@@ -198,27 +203,31 @@ our $ObjectManagerDisabled = 1;
 
         if ( $Escalation{FirstResponseTime} ) {
 
-            # get time object
-            my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
-            # get unix time stamps
-            my $CreateTime = $TimeObject->TimeStamp2SystemTime(
-                String => $Param{Ticket}->{Created},
-            );
-            my $FirstResponseTime = $TimeObject->TimeStamp2SystemTime(
-                String => $Data{FirstResponse},
+            # create datetime object
+            my $DateTimeObject = $Kernel::OM->Create(
+                'Kernel::System::DateTime',
+                ObjectParams => {
+                    String => $Param{Ticket}->{Created},
+                    }
             );
 
-            # get time between creation and first response
-            my $WorkingTime = $TimeObject->WorkingTime(
-                StartTime => $CreateTime,
-                StopTime  => $FirstResponseTime,
-                Calendar  => $Escalation{Calendar},
+            my $FirstResponseTimeObj = $DateTimeObject->Clone();
+            $FirstResponseTimeObj->Set(
+                String => $Data{FirstResponse}
             );
+
+            my $DeltaObj = $DateTimeObject->Delta(
+                DateTimeObject => $FirstResponseTimeObj,
+                ForWorkingTime => 1,
+                Calendar       => $Escalation{Calendar},
+            );
+
+            my $WorkingTime = $DeltaObj ? $DeltaObj->{AbsoluteSeconds} : 0;
 
             $Data{FirstResponseInMin} = int( $WorkingTime / 60 );
             my $EscalationFirstResponseTime = $Escalation{FirstResponseTime} * 60;
-            $Data{FirstResponseDiffInMin} = int( ( $EscalationFirstResponseTime - $WorkingTime ) / 60 );
+            $Data{FirstResponseDiffInMin} =
+                int( ( $EscalationFirstResponseTime - $WorkingTime ) / 60 );
         }
 
         return %Data;
@@ -250,7 +259,6 @@ our $ObjectManagerDisabled = 1;
 
         # lookup if no NewUserID is given
         if ( !$Param{NewUserID} ) {
-
             $Param{NewUserID} = $UserObject->UserLookup(
                 UserLogin => $Param{NewUser},
             );
@@ -258,10 +266,18 @@ our $ObjectManagerDisabled = 1;
 
         # lookup if no NewUser is given
         if ( !$Param{NewUser} ) {
-
             $Param{NewUser} = $UserObject->UserLookup(
                 UserID => $Param{NewUserID},
             );
+        }
+
+        # make sure the user exists
+        if ( !$UserObject->UserLookup( UserID => $Param{NewUserID} ) ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "User does not exist.",
+            );
+            return;
         }
 
         # check if update is needed!
@@ -320,9 +336,7 @@ our $ObjectManagerDisabled = 1;
                 },
                 UserID => $Param{UserID},
             );
-
         }
-
 
         # trigger event
         $Self->EventHandler(

@@ -4,23 +4,23 @@
     <Version>5.0.1</Version>
     <ChangeLog Version="5.0.1" Date="2017-03-17 14:57:07 +0100">Added TicketTypeUpdate event to TicketEscalationIndex and TriggerEscalationStopEvents to trigger escalation events.</ChangeLog>
     <ChangeLog Version="1.4.1" Date="2016-02-11 17:43:00 UTC">Ported to OTRS 5.</ChangeLog>
-    <Framework>5.0.x</Framework>
-    <PackageRequired Version="3.0.0">Znuny4OTRS-Repo</PackageRequired>
+    <Framework>6.0.x</Framework>
+    <PackageRequired Version="6.0.1">Znuny4OTRS-Repo</PackageRequired>
     <Vendor>Znuny GmbH</Vendor>
     <URL>http://znuny.com/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <Description Lang="en">An extension to support type and priority based escalations.</Description>
     <Description Lang="de">Eine Erweiterung um typ- und prioritätsbasierte Eskalationen zu unterstützen.</Description>
     <Filelist>
-        <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
-        <File Permission="644" Location="Custom/Kernel/Modules/AdminType.pm"/>
-        <File Permission="644" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminPriority.tt"/>
-        <File Permission="644" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminType.tt"/>
-        <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
-        <File Permission="644" Location="Custom/Kernel/System/Type.pm"/>
-        <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
-        <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
-        <File Permission="644" Location="Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
+        <File Permission="660" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
+        <File Permission="660" Location="Custom/Kernel/Modules/AdminType.pm"/>
+        <File Permission="660" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminPriority.tt"/>
+        <File Permission="660" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminType.tt"/>
+        <File Permission="660" Location="Custom/Kernel/System/Priority.pm"/>
+        <File Permission="660" Location="Custom/Kernel/System/Type.pm"/>
+        <File Permission="660" Location="Kernel/Config/Files/XML/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
+        <File Permission="660" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
+        <File Permission="660" Location="Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">
