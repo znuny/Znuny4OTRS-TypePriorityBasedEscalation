@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
     <Name>Znuny4OTRS-TypePriorityBasedEscalation</Name>
-    <Version>5.0.1</Version>
+    <Version>6.0.1</Version>
+    <ChangeLog Version="6.0.1" Date="2017-11-14 14:14:12 +0100">Initial release 6.0.x.</ChangeLog>
     <ChangeLog Version="5.0.1" Date="2017-03-17 14:57:07 +0100">Added TicketTypeUpdate event to TicketEscalationIndex and TriggerEscalationStopEvents to trigger escalation events.</ChangeLog>
     <ChangeLog Version="1.4.1" Date="2016-02-11 17:43:00 UTC">Ported to OTRS 5.</ChangeLog>
     <Framework>6.0.x</Framework>
