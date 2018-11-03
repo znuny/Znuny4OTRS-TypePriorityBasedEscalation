@@ -1,12 +1,12 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
-# Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/00575bc914a2968158c78bd5ef4bc619cd50ddbc/Kernel/System/Priority.pm
+# $origin: otrs - 00575bc914a2968158c78bd5ef4bc619cd50ddbc - Kernel/System/Priority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::System::Priority;
@@ -416,10 +416,10 @@ sub PriorityLookup {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (L<http://otrs.org/>).
+This software is part of the OTRS project (L<https://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+the enclosed file COPYING for license information (GPL). If you
+did not receive this file, see L<https://www.gnu.org/licenses/gpl-3.0.txt>.
 
 =cut
