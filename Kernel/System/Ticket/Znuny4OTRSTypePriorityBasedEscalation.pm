@@ -1,12 +1,12 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
-# Copyright (C) 2012-2017 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
 # --
 # $origin: otrs - 40b53ef477ff3c44abba98c0310dfc74b4b707ec - Kernel/System/Ticket.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 ## nofilter(TidyAll::Plugin::OTRS::Perl::PerlCritic)
 
