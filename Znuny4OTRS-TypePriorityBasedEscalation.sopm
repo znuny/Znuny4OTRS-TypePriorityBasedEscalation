@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
     <Name>Znuny4OTRS-TypePriorityBasedEscalation</Name>
-    <Version>1.2.7</Version>
+    <Version>3.3.0</Version>
+    <ChangeLog Version="3.3.0" Date="2018-11-20 12:16:48 +0100">Added TicketTypeUpdate event to TicketEscalationIndex and TriggerEscalationStopEvents to trigger escalation events.</ChangeLog>
     <ChangeLog Version="1.2.7" Date="2015-07-27 08:24:18 UTC">Fixed bug: Missing copyright.</ChangeLog>
     <ChangeLog Version="1.2.5" Date="2015-05-07 13:49:16 +0200">Fixed error on TypeAdd and PriorityAdd.</ChangeLog>
     <ChangeLog Version="1.2.4" Date="2014-07-02 12:45:35 +0200">Fixed bug: Missing parameter 'OldTicketData' throws error on type and priority update event.</ChangeLog>
@@ -68,22 +69,22 @@
     </DatabaseUpgrade>
     <DatabaseUninstall>
         <TableAlter Name="ticket_priority">
-            <ColumnDrop Name="calendar_name" />
-            <ColumnDrop Name="first_response_time" />
-            <ColumnDrop Name="first_response_notify" />
-            <ColumnDrop Name="update_time" />
-            <ColumnDrop Name="update_notify" />
-            <ColumnDrop Name="solution_time" />
-            <ColumnDrop Name="solution_notify" />
+            <ColumnDrop Name="calendar_name"/>
+            <ColumnDrop Name="first_response_time"/>
+            <ColumnDrop Name="first_response_notify"/>
+            <ColumnDrop Name="update_time"/>
+            <ColumnDrop Name="update_notify"/>
+            <ColumnDrop Name="solution_time"/>
+            <ColumnDrop Name="solution_notify"/>
         </TableAlter>
         <TableAlter Name="ticket_type">
-            <ColumnDrop Name="calendar_name" />
-            <ColumnDrop Name="first_response_time" />
-            <ColumnDrop Name="first_response_notify" />
-            <ColumnDrop Name="update_time" />
-            <ColumnDrop Name="update_notify" />
-            <ColumnDrop Name="solution_time" />
-            <ColumnDrop Name="solution_notify" />
+            <ColumnDrop Name="calendar_name"/>
+            <ColumnDrop Name="first_response_time"/>
+            <ColumnDrop Name="first_response_notify"/>
+            <ColumnDrop Name="update_time"/>
+            <ColumnDrop Name="update_notify"/>
+            <ColumnDrop Name="solution_time"/>
+            <ColumnDrop Name="solution_notify"/>
         </TableAlter>
     </DatabaseUninstall>
 </otrs_package>
