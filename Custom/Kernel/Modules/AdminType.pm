@@ -1,10 +1,12 @@
 # --
-# Kernel/Modules/AdminType.pm - to add/update/delete ticket types
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
+# --
+# $origin: otrs - 33b1ad6acf39acae4eb40e88f0256fa2e8b50fc4 - Kernel/Modules/AdminType.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Modules::AdminType;
@@ -72,11 +74,15 @@ sub Run {
 
         my $Note = '';
         my ( %GetParam, %Errors );
+
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+        # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(ID Name Text Comment ValidID)) {
-        for my $Parameter (qw(ID Name  Text Comment ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+        #        for my $Parameter (qw(ID Name Text Comment ValidID)) {
+        for my $Parameter (
+            qw(ID Name  Text Comment ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)
+            )
+        {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -164,11 +170,15 @@ sub Run {
 
         my $Note = '';
         my ( %GetParam, %Errors );
+
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+        # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(ID Name Text Comment ValidID)) {
-        for my $Parameter (qw(ID Name Text Comment ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+        #        for my $Parameter (qw(ID Name Text Comment ValidID)) {
+        for my $Parameter (
+            qw(ID Name Text Comment ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)
+            )
+        {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -259,7 +269,7 @@ sub _Edit {
     );
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
     # generate CalendarOptionStrg
     my %CalendarList;
@@ -309,6 +319,7 @@ sub _Edit {
         SelectedID   => $Param{SolutionNotify},
         PossibleNone => 1,
     );
+
 # ---
 
     $Self->{LayoutObject}->Block(

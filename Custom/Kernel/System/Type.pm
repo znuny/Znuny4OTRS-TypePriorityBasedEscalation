@@ -1,10 +1,12 @@
 # --
-# Kernel/System/Type.pm - All ticket type related functions
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
+# --
+# $origin: otrs - 33b1ad6acf39acae4eb40e88f0256fa2e8b50fc4 - Kernel/System/Type.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::System::Type;
@@ -108,31 +110,43 @@ sub TypeAdd {
     # check needed stuff
     for (qw(Name ValidID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Do(
-#         SQL => 'INSERT INTO ticket_type (name, valid_id, '
-#             . ' create_time, create_by, change_time, change_by)'
-#             . ' VALUES (?, ?, current_timestamp, ?, current_timestamp, ?)',
-#         Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID} ],
-#     );
-    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
-        $Param{ $DefaultNullAttr } ||= 0;
+    #     return if !$Self->{DBObject}->Do(
+    #         SQL => 'INSERT INTO ticket_type (name, valid_id, '
+    #             . ' create_time, create_by, change_time, change_by)'
+    #             . ' VALUES (?, ?, current_timestamp, ?, current_timestamp, ?)',
+    #         Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID} ],
+    #     );
+    for my $DefaultNullAttr (
+        qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify))
+    {
+        $Param{$DefaultNullAttr} ||= 0;
     }
     $Param{Calendar} ||= '';
 
     return if !$Self->{DBObject}->Do(
-        SQL => 'INSERT INTO ticket_type (name, valid_id, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
+        SQL =>
+            'INSERT INTO ticket_type (name, valid_id, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . ' create_time, create_by, change_time, change_by)'
             . ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
-        Bind => [ \$Param{Name}, \$Param{ValidID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID}, \$Param{UserID} ],
+        Bind => [
+            \$Param{Name},              \$Param{ValidID},             \$Param{Calendar},
+            \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime},
+            \$Param{UpdateNotify},      \$Param{SolutionTime},        \$Param{SolutionNotify},
+            \$Param{UserID},            \$Param{UserID}
+        ],
     );
+
 # ---
 
     # get new type id
@@ -223,20 +237,21 @@ sub TypeGet {
 
     # ask the database
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Prepare(
-#         SQL => 'SELECT id, name, valid_id, '
-#             . 'create_time, create_by, change_time, change_by '
-#             . 'FROM ticket_type WHERE id = ?',
-#         Bind => [ \$Param{ID} ],
-#     );
+    #     return if !$Self->{DBObject}->Prepare(
+    #         SQL => 'SELECT id, name, valid_id, '
+    #             . 'create_time, create_by, change_time, change_by '
+    #             . 'FROM ticket_type WHERE id = ?',
+    #         Bind => [ \$Param{ID} ],
+    #     );
     return if !$Self->{DBObject}->Prepare(
         SQL => 'SELECT id, name, valid_id, '
             . 'create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_type WHERE id = ?',
         Bind => [ \$Param{ID} ],
     );
+
 # ---
 
     # fetch the result
@@ -249,8 +264,9 @@ sub TypeGet {
         $Type{CreateBy}   = $Data[4];
         $Type{ChangeTime} = $Data[5];
         $Type{ChangeBy}   = $Data[6];
+
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+        # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
         $Type{Calendar}            = $Data[7];
         $Type{FirstResponseTime}   = $Data[8];
@@ -259,6 +275,7 @@ sub TypeGet {
         $Type{UpdateNotify}        = $Data[11];
         $Type{SolutionTime}        = $Data[12];
         $Type{SolutionNotify}      = $Data[13];
+
 # ---
     }
 
@@ -272,7 +289,10 @@ sub TypeGet {
     }
 
     # set cache
-    $Self->{CacheInternalObject}->Set( Key => $CacheKey, Value => \%Type );
+    $Self->{CacheInternalObject}->Set(
+        Key   => $CacheKey,
+        Value => \%Type
+    );
 
     return %Type;
 }
@@ -296,24 +316,29 @@ sub TypeUpdate {
     # check needed stuff
     for (qw(ID Name ValidID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
     # sql
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Do(
-#         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
-#             . ' change_time = current_timestamp, change_by = ? WHERE id = ?',
-#         Bind => [
-#             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{ID},
-#         ],
-#     );
-    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
-        $Param{ $DefaultNullAttr } ||= 0;
+    #     return if !$Self->{DBObject}->Do(
+    #         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
+    #             . ' change_time = current_timestamp, change_by = ? WHERE id = ?',
+    #         Bind => [
+    #             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{ID},
+    #         ],
+    #     );
+    for my $DefaultNullAttr (
+        qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify))
+    {
+        $Param{$DefaultNullAttr} ||= 0;
     }
     $Param{Calendar} ||= '';
 
@@ -321,9 +346,12 @@ sub TypeUpdate {
         SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
             . 'change_time = current_timestamp, change_by = ?, calendar_name = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{ID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime},
+            \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime},
+            \$Param{SolutionNotify}, \$Param{ID},
         ],
     );
+
 # ---
 
     # reset cache
@@ -383,7 +411,10 @@ sub TypeList {
     }
 
     # set cache
-    $Self->{CacheInternalObject}->Set( Key => $CacheKey, Value => \%TypeList );
+    $Self->{CacheInternalObject}->Set(
+        Key   => $CacheKey,
+        Value => \%TypeList
+    );
 
     return %TypeList;
 }
@@ -448,10 +479,10 @@ sub TypeLookup {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (L<http://otrs.org/>).
+This software is part of the OTRS project (L<https://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+the enclosed file COPYING for license information (GPL). If you
+did not receive this file, see L<https://www.gnu.org/licenses/gpl-3.0.txt>.
 
 =cut

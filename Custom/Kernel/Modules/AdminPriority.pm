@@ -1,13 +1,12 @@
 # --
-# Kernel/Modules/AdminPriority.pm - admin frontend of ticket priority
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
-# Copyright (C) 2013 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
 # --
-# $Id: AdminPriority.pm,v 1.15 2012-02-27 22:53:37 ep Exp $
+# $origin: otrs - 33b1ad6acf39acae4eb40e88f0256fa2e8b50fc4 - Kernel/Modules/AdminPriority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Modules::AdminPriority;
@@ -17,9 +16,6 @@ use warnings;
 
 use Kernel::System::Priority;
 use Kernel::System::Valid;
-
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.15 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -80,10 +76,13 @@ sub Run {
 
         # get params
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+        # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+        #        for my $Parameter (qw(PriorityID Name ValidID)) {
+        for my $Parameter (
+            qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)
+            )
+        {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -167,10 +166,13 @@ sub Run {
 
         # get params
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+        # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+        #        for my $Parameter (qw(PriorityID Name ValidID)) {
+        for my $Parameter (
+            qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)
+            )
+        {
 # ---
             $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
         }
@@ -260,7 +262,7 @@ sub _Edit {
     );
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
     # generate CalendarOptionStrg
     my %CalendarList;
@@ -310,6 +312,7 @@ sub _Edit {
         SelectedID   => $Param{SolutionNotify},
         PossibleNone => 1,
     );
+
 # ---
 
     $Self->{LayoutObject}->Block(

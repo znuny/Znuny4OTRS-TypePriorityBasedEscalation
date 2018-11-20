@@ -1,6 +1,12 @@
 # --
-# Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm - overwrite/redefines the ticket escalation functions and the owner set function
-# Copyright (C) 2014 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
+# --
+# $origin: otrs - 33b1ad6acf39acae4eb40e88f0256fa2e8b50fc4 - Kernel/System/Ticket/TicketEscalationPreferences.pm
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation;
@@ -105,7 +111,7 @@ sub Kernel::System::Ticket::TicketEscalationPreferences {
     return %Escalation;
 }
 
-sub Kernel::System::Ticket::_TicketGetFirstResponse {
+sub Kernel::System::Ticket::_TicketGetFirstResponse { ## no critic
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
@@ -116,9 +122,9 @@ sub Kernel::System::Ticket::_TicketGetFirstResponse {
         }
     }
 
-#---
-# Znuny4OTRS-TypePriorityBasedEscalations
-#---
+# ---
+# Znuny4OTRS-TypePriorityBasedEscalation
+# ---
 #    # check if first response is already done
 #    return if !$Self->{DBObject}->Prepare(
 #        SQL => 'SELECT a.create_time,a.id FROM article a, article_sender_type ast, article_type art'
@@ -155,7 +161,7 @@ sub Kernel::System::Ticket::_TicketGetFirstResponse {
         Bind  => [ \$Param{TicketID} ],
         Limit => 1,
     );
-#---
+# ---
     my %Data;
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
         $Data{FirstResponse} = $Row[0];
@@ -231,7 +237,7 @@ sub Kernel::System::Ticket::TicketOwnerSet {
     }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
     # get current ticket
     my %Ticket = $Self->TicketGet(
@@ -280,7 +286,7 @@ sub Kernel::System::Ticket::TicketOwnerSet {
     }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
 #     # trigger event
 #     $Self->EventHandler(
@@ -367,7 +373,7 @@ sub Kernel::System::Ticket::TicketTypeSet {
 
     # trigger event
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
 #     $Self->EventHandler(
 #         Event => 'TicketTypeUpdate',
@@ -456,7 +462,7 @@ sub Kernel::System::Ticket::TicketPrioritySet {
 
     # trigger event
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalations
+# Znuny4OTRS-TypePriorityBasedEscalation
 # ---
 #     $Self->EventHandler(
 #         Event => 'TicketPriorityUpdate',

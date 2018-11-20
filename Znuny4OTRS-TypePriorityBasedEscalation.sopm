@@ -21,17 +21,17 @@
     <Framework>3.1.x</Framework>
     <Framework>3.2.x</Framework>
     <Framework>3.3.x</Framework>
+    <PackageRequired Version="3.3.2">Znuny4OTRS-Repo</PackageRequired>
     <Vendor>Znuny GmbH</Vendor>
     <URL>http://znuny.com/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
-    <PackageRequired Version="1.0.0">Znuny4OTRS-Repo</PackageRequired>
     <Description Lang="en">An extension to support type and priority based escalations.</Description>
     <Description Lang="de">Eine Erweiterung um typ- und prioritätsbasierte Eskalationen zu unterstützen.</Description>
     <Filelist>
-        <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
-        <File Permission="644" Location="Custom/Kernel/System/Type.pm"/>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminPriority.pm"/>
         <File Permission="644" Location="Custom/Kernel/Modules/AdminType.pm"/>
+        <File Permission="644" Location="Custom/Kernel/System/Priority.pm"/>
+        <File Permission="644" Location="Custom/Kernel/System/Type.pm"/>
         <File Permission="644" Location="Kernel/Config/Files/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
         <File Permission="644" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Standard/AdminPriority.dtl"/>
@@ -58,7 +58,7 @@
             <ColumnAdd Name="solution_notify" Required="false" Type="SMALLINT"/>
         </TableAlter>
     </DatabaseInstall>
-    <DatabaseUpgrade type="post">
+    <DatabaseUpgrade>
         <TableAlter Name="ticket_priority" Version="1.2.2">
             <ColumnAdd Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
         </TableAlter>
@@ -68,22 +68,22 @@
     </DatabaseUpgrade>
     <DatabaseUninstall>
         <TableAlter Name="ticket_priority">
-            <ColumnDrop Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
-            <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
-            <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
-            <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>
-            <ColumnDrop Name="update_notify" Required="false" Type="SMALLINT"/>
-            <ColumnDrop Name="solution_time" Required="true" Type="INTEGER"/>
-            <ColumnDrop Name="solution_notify" Required="false" Type="SMALLINT"/>
+            <ColumnDrop Name="calendar_name" />
+            <ColumnDrop Name="first_response_time" />
+            <ColumnDrop Name="first_response_notify" />
+            <ColumnDrop Name="update_time" />
+            <ColumnDrop Name="update_notify" />
+            <ColumnDrop Name="solution_time" />
+            <ColumnDrop Name="solution_notify" />
         </TableAlter>
         <TableAlter Name="ticket_type">
-            <ColumnDrop Name="calendar_name" Required="false" Size="100" Type="VARCHAR"/>
-            <ColumnDrop Name="first_response_time" Required="true" Type="INTEGER"/>
-            <ColumnDrop Name="first_response_notify" Required="false" Type="SMALLINT"/>
-            <ColumnDrop Name="update_time" Required="true" Type="INTEGER"/>
-            <ColumnDrop Name="update_notify" Required="false" Type="SMALLINT"/>
-            <ColumnDrop Name="solution_time" Required="true" Type="INTEGER"/>
-            <ColumnDrop Name="solution_notify" Required="false" Type="SMALLINT"/>
+            <ColumnDrop Name="calendar_name" />
+            <ColumnDrop Name="first_response_time" />
+            <ColumnDrop Name="first_response_notify" />
+            <ColumnDrop Name="update_time" />
+            <ColumnDrop Name="update_notify" />
+            <ColumnDrop Name="solution_time" />
+            <ColumnDrop Name="solution_notify" />
         </TableAlter>
     </DatabaseUninstall>
 </otrs_package>

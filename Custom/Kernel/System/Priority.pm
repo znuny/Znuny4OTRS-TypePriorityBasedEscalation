@@ -1,13 +1,12 @@
 # --
-# Kernel/System/Priority.pm - all ticket priority function
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
-# Copyright (C) 2013 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2018 Znuny GmbH, http://znuny.com/
 # --
-# $Id: Priority.pm,v 1.36 2012-03-29 11:11:55 mh Exp $
+# $origin: otrs - 33b1ad6acf39acae4eb40e88f0256fa2e8b50fc4 - Kernel/System/Priority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::System::Priority;
@@ -21,7 +20,6 @@ use Kernel::System::Time;
 use Kernel::System::Valid;
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.36 $) [1];
 
 =head1 NAME
 
@@ -171,7 +169,10 @@ sub PriorityGet {
     # check needed stuff
     for (qw(PriorityID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -184,20 +185,22 @@ sub PriorityGet {
 
     # ask database
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Prepare(
-#         SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by '
-#             . 'FROM ticket_priority WHERE id = ?',
-#         Bind  => [ \$Param{PriorityID} ],
-#         Limit => 1,
-#     );
+    #     return if !$Self->{DBObject}->Prepare(
+    #         SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by '
+    #             . 'FROM ticket_priority WHERE id = ?',
+    #         Bind  => [ \$Param{PriorityID} ],
+    #         Limit => 1,
+    #     );
     return if !$Self->{DBObject}->Prepare(
-        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
+        SQL =>
+            'SELECT id, name, valid_id, create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_priority WHERE id = ?',
         Bind  => [ \$Param{PriorityID} ],
         Limit => 1,
     );
+
 # ---
 
     # fetch the result
@@ -210,8 +213,9 @@ sub PriorityGet {
         $Data{CreateBy}   = $Row[4];
         $Data{ChangeTime} = $Row[5];
         $Data{ChangeBy}   = $Row[6];
+
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+        # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
         $Data{Calendar}            = $Row[7];
         $Data{FirstResponseTime}   = $Row[8];
@@ -220,6 +224,7 @@ sub PriorityGet {
         $Data{UpdateNotify}        = $Row[11];
         $Data{SolutionTime}        = $Row[12];
         $Data{SolutionNotify}      = $Row[13];
+
 # ---
     }
 
@@ -250,33 +255,42 @@ sub PriorityAdd {
     # check needed stuff
     for (qw(Name ValidID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Do(
-#         SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, '
-#             . 'change_time, change_by) VALUES '
-#             . '(?, ?, current_timestamp, ?, current_timestamp, ?)',
-#         Bind => [
-#             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
-#         ],
-#     );
-    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
-        $Param{ $DefaultNullAttr } ||= 0;
+    #     return if !$Self->{DBObject}->Do(
+    #         SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, '
+    #             . 'change_time, change_by) VALUES '
+    #             . '(?, ?, current_timestamp, ?, current_timestamp, ?)',
+    #         Bind => [
+    #             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
+    #         ],
+    #     );
+    for my $DefaultNullAttr (
+        qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify))
+    {
+        $Param{$DefaultNullAttr} ||= 0;
     }
     return if !$Self->{DBObject}->Do(
-        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
+        SQL =>
+            'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . 'change_time, change_by) VALUES '
             . '(?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime},
+            \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime},
+            \$Param{SolutionNotify}, \$Param{UserID},
         ],
     );
+
 # ---
 
     # get new state id
@@ -320,7 +334,10 @@ sub PriorityUpdate {
     # check needed stuff
     for (qw(PriorityID Name ValidID UserID)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -331,17 +348,19 @@ sub PriorityUpdate {
     }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+    # Znuny4OTRS-TypePriorityBasedEscalation
 # ---
-#     return if !$Self->{DBObject}->Do(
-#         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
-#             . 'change_time = current_timestamp, change_by = ? WHERE id = ?',
-#         Bind => [
-#             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{PriorityID},
-#         ],
-#     );
-    for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
-        $Param{ $DefaultNullAttr } ||= 0;
+    #     return if !$Self->{DBObject}->Do(
+    #         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
+    #             . 'change_time = current_timestamp, change_by = ? WHERE id = ?',
+    #         Bind => [
+    #             \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{PriorityID},
+    #         ],
+    #     );
+    for my $DefaultNullAttr (
+        qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify))
+    {
+        $Param{$DefaultNullAttr} ||= 0;
     }
     $Param{Calendar} ||= '';
 
@@ -349,9 +368,12 @@ sub PriorityUpdate {
         SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
             . 'change_time = current_timestamp, change_by = ?, calendar_name = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{PriorityID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime},
+            \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime},
+            \$Param{SolutionNotify}, \$Param{PriorityID},
         ],
     );
+
 # ---
 
     # delete cache
@@ -392,7 +414,10 @@ sub PriorityLookup {
 
     # check needed stuff
     if ( !$Param{Priority} && !$Param{PriorityID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Priority or PriorityID!' );
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => 'Need Priority or PriorityID!'
+        );
         return;
     }
 
@@ -434,16 +459,12 @@ sub PriorityLookup {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (L<http://otrs.org/>).
+This software is part of the OTRS project (L<https://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+the enclosed file COPYING for license information (GPL). If you
+did not receive this file, see L<https://www.gnu.org/licenses/gpl-3.0.txt>.
 
 =cut
-
-=head1 VERSION
-
-$Revision: 1.36 $ $Date: 2012-03-29 11:11:55 $
 
 =cut
