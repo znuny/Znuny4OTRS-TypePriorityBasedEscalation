@@ -1,4 +1,4 @@
-# TypePriorityBasedEscalation
+# Funktionalität
 
 Diese Erweiterung enthält die Funktionalität um typ- und prioritätsbasierte Eskalationen zu unterstützen.
 Im OTRS Standard kann die Eskalation nur für Queues aktiviert und konfiguriert werden.
@@ -10,7 +10,3 @@ Service/SLA, Type, Priority, Queue
 
 * Sie können die Eskalations-Attribute für Ticket-Typen über die Administrationsoberfläche festlegen.
 * Sie können die Eskalations-Attribute für Ticket-Prioritäten über die Administrationsoberfläche festlegen.
-
-## Konfiguration
-
-* Definieren Sie die Liste in der Administrationsoberfläche -> Typen/Prioritäten

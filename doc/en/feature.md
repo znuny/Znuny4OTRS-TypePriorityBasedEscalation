@@ -1,4 +1,4 @@
-# TypePriorityBasedEscalation
+# Functionality
 
 This package extends the OTRS standard with type and priority based escalations.
 In default OTRS escalation can only be activated and configured for queues and services/SLAs.
@@ -12,7 +12,3 @@ Service/SLA, Type, Priority, Queue
 ![Screenshot Types](doc/en/type.png)
 * Allows you to define escalation attributes for ticket priorities via the admin interface.
 ![Screenshot Priority](doc/en/priority.png)
-
-## Configuration
-
-* Define the list in Admin-Interface -> Types/Priorities
