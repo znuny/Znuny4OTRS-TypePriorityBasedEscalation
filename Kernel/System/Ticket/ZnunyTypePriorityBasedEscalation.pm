@@ -1,8 +1,8 @@
 # --
-# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/System/Ticket.pm
+# $origin: znuny - 7b01128479d53da23792fc174c6b51bd183056b7 - Kernel/System/Ticket.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -10,7 +10,7 @@
 # --
 ## nofilter(TidyAll::Plugin::OTRS::Perl::PerlCritic)
 
-package Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation;
+package Kernel::System::Ticket::ZnunyTypePriorityBasedEscalation;
 
 use strict;
 use warnings;
@@ -43,9 +43,24 @@ our $ObjectManagerDisabled = 1;
         # get escalation properties
         my %Escalation;
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
+#         if ( $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Service') && $Ticket{SLAID} ) {
 #
+#             %Escalation = $Kernel::OM->Get('Kernel::System::SLA')->SLAGet(
+#                 SLAID  => $Ticket{SLAID},
+#                 UserID => $Param{UserID},
+#                 Cache  => 1,
+#             );
+#         }
+#         else {
+#             %Escalation = $Kernel::OM->Get('Kernel::System::Queue')->QueueGet(
+#                 ID     => $Ticket{QueueID},
+#                 UserID => $Param{UserID},
+#                 Cache  => 1,
+#             );
+#         }
+
         my $EscalationOrder = $Kernel::OM->Get('Kernel::Config')->Get('EscalationOrder');
         if ( !IsArrayRefWithData($EscalationOrder) ) {
             $EscalationOrder = [ 'SLA', 'Type', 'Priority', 'Queue' ];
@@ -53,9 +68,7 @@ our $ObjectManagerDisabled = 1;
 
         ATTRIBUTE:
         for my $CurrentAttribute ( @{$EscalationOrder} ) {
-
             if ( $CurrentAttribute eq 'SLA' ) {
-
                 next ATTRIBUTE if !$Kernel::OM->Get('Kernel::Config')->Get('Ticket::Service');
                 next ATTRIBUTE if !$Ticket{SLAID};
 
@@ -66,7 +79,6 @@ our $ObjectManagerDisabled = 1;
                 );
             }
             elsif ( $CurrentAttribute eq 'Type' ) {
-
                 next ATTRIBUTE if !$Kernel::OM->Get('Kernel::Config')->Get('Ticket::Type');
                 next ATTRIBUTE if !$Ticket{TypeID};
 
@@ -76,7 +88,6 @@ our $ObjectManagerDisabled = 1;
                 );
             }
             elsif ( $CurrentAttribute eq 'Priority' ) {
-
                 next ATTRIBUTE if !$Ticket{PriorityID};
 
                 # check if priority bases escalations
@@ -105,7 +116,6 @@ our $ObjectManagerDisabled = 1;
                 );
             }
             elsif ( $CurrentAttribute eq 'Queue' ) {
-
                 next ATTRIBUTE if !$Ticket{QueueID};
 
                 %Escalation = $Kernel::OM->Get('Kernel::System::Queue')->QueueGet(
@@ -140,7 +150,7 @@ our $ObjectManagerDisabled = 1;
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #         # check if first response is already done
 #         return if !$DBObject->Prepare(
@@ -208,7 +218,7 @@ our $ObjectManagerDisabled = 1;
                 'Kernel::System::DateTime',
                 ObjectParams => {
                     String => $Param{Ticket}->{Created},
-                    }
+                }
             );
 
             my $FirstResponseTimeObj = $DateTimeObject->Clone();
@@ -289,7 +299,7 @@ our $ObjectManagerDisabled = 1;
         }
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
         # get current ticket
         my %Ticket = $Self->TicketGet(
@@ -344,7 +354,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
@@ -426,7 +436,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---
@@ -514,7 +524,7 @@ our $ObjectManagerDisabled = 1;
             Data  => {
                 TicketID => $Param{TicketID},
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
                 OldTicketData => \%Ticket,
 # ---

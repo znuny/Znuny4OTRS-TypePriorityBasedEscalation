@@ -1,8 +1,8 @@
 # --
-# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/Output/HTML/Templates/Standard/AdminType.tt
+# $origin: znuny - 012b2cb0daf8519ff314f751ad03b62219f63331 - Kernel/Output/HTML/Templates/Standard/AdminType.tt
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -48,7 +48,7 @@
 
 [% RenderBlockStart("ActionAdd") %]
                     <li>
-                        <a href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=Add" class="CallForAction Fullsize Center"><span><i class="fa fa-plus-square"></i>[% Translate("Add ticket type") | html %]</span></a>
+                        <a href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=Add" class="CallForAction Fullsize Center"><span><i class="fa fa-plus-square"></i>[% Translate("Add Type") | html %]</span></a>
                     </li>
 [% RenderBlockEnd("ActionAdd") %]
 
@@ -154,7 +154,7 @@
                         <div class="Clear"></div>
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
                         <label for="Calendar">[% Translate("Calendar") | html %]:</label>
                         <div class="Field">

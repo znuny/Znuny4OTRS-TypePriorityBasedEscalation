@@ -1,8 +1,8 @@
 # --
-# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/Modules/AdminType.pm
+# $origin: znuny - f99bac036c969a34415839fbc1de903e6b59f72d - Kernel/Modules/AdminType.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -43,11 +43,23 @@ sub Run {
     my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
     my $TypeObject   = $Kernel::OM->Get('Kernel::System::Type');
 
+    # Check if ticket type is enabled.
+    my $TypeNotActive;
+    if ( !$Kernel::OM->Get('Kernel::Config')->Get('Ticket::Type') ) {
+        $TypeNotActive = $LayoutObject->Notify(
+            Priority => 'Error',
+            Data     => $LayoutObject->{LanguageObject}->Translate( "Please activate %s first!", "Type" ),
+            Link =>
+                $LayoutObject->{Baselink}
+                . 'Action=AdminSystemConfiguration;Subaction=View;Setting=Ticket%3A%3AType',
+        );
+    }
+
     # ------------------------------------------------------------ #
     # change
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'Change' ) {
-        my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
+        my $ID   = $ParamObject->GetParam( Param => 'ID' ) || '';
         my %Data = $TypeObject->TypeGet( ID => $ID );
         if ( !%Data ) {
             return $LayoutObject->ErrorScreen(
@@ -56,6 +68,9 @@ sub Run {
         }
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
+        if ($TypeNotActive) {
+            $Output .= $TypeNotActive;
+        }
         $Self->_Edit(
             Action => 'Change',
             %Data,
@@ -79,7 +94,7 @@ sub Run {
         my $Note = '';
         my ( %GetParam, %Errors );
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #        for my $Parameter (qw(ID Name Text Comment ValidID)) {
         for my $Parameter (qw(ID Name  Text Comment ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
@@ -108,7 +123,7 @@ sub Run {
         );
 
         if ($NameExists) {
-            $Errors{NameExists} = 1;
+            $Errors{NameExists}    = 1;
             $Errors{'NameInvalid'} = 'ServerError';
         }
 
@@ -209,6 +224,9 @@ sub Run {
         # something has gone wrong
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
+        if ($TypeNotActive) {
+            $Output .= $TypeNotActive;
+        }
         $Output .= $LayoutObject->Notify( Priority => 'Error' );
         $Self->_Edit(
             Action => 'Change',
@@ -232,6 +250,9 @@ sub Run {
         $GetParam{Name} = $ParamObject->GetParam( Param => 'Name' );
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
+        if ($TypeNotActive) {
+            $Output .= $TypeNotActive;
+        }
         $Self->_Edit(
             Action => 'Add',
             %GetParam,
@@ -255,7 +276,7 @@ sub Run {
         my $Note = '';
         my ( %GetParam, %Errors );
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #        for my $Parameter (qw(ID Name Text Comment ValidID)) {
         for my $Parameter (qw(ID Name Text Comment ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
@@ -273,7 +294,7 @@ sub Run {
         # check if a type exists with this name
         my $NameExists = $TypeObject->NameExistsCheck( Name => $GetParam{Name} );
         if ($NameExists) {
-            $Errors{NameExists} = 1;
+            $Errors{NameExists}    = 1;
             $Errors{'NameInvalid'} = 'ServerError';
         }
 
@@ -289,6 +310,9 @@ sub Run {
                 $Self->_Overview();
                 my $Output = $LayoutObject->Header();
                 $Output .= $LayoutObject->NavigationBar();
+                if ($TypeNotActive) {
+                    $Output .= $TypeNotActive;
+                }
                 $Output .= $LayoutObject->Notify( Info => Translatable('Type added!') );
                 $Output .= $LayoutObject->Output(
                     TemplateFile => 'AdminType',
@@ -302,6 +326,9 @@ sub Run {
         # something has gone wrong
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
+        if ($TypeNotActive) {
+            $Output .= $TypeNotActive;
+        }
         $Output .= $LayoutObject->Notify( Priority => 'Error' );
         $Self->_Edit(
             Action => 'Add',
@@ -323,16 +350,8 @@ sub Run {
 
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
-
-        # check if ticket type is enabled to use it here
-        if ( !$Kernel::OM->Get('Kernel::Config')->Get('Ticket::Type') ) {
-            $Output .= $LayoutObject->Notify(
-                Priority => 'Error',
-                Data     => $LayoutObject->{LanguageObject}->Translate( "Please activate %s first!", "Type" ),
-                Link =>
-                    $LayoutObject->{Baselink}
-                    . 'Action=AdminSystemConfiguration;Subaction=View;Setting=Ticket%3A%3AType',
-            );
+        if ($TypeNotActive) {
+            $Output .= $TypeNotActive;
         }
 
         $Self->_Overview();
@@ -372,7 +391,7 @@ sub _Edit {
     );
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
     # generate CalendarOptionStrg
     my %CalendarList;
@@ -520,7 +539,7 @@ sub _Overview {
     );
 
     my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
-    my %List = $TypeObject->TypeList( Valid => 0 );
+    my %List       = $TypeObject->TypeList( Valid => 0 );
 
     # if there are any types, they are shown
     if (%List) {

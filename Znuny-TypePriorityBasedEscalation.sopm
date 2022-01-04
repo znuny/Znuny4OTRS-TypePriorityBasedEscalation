@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
-    <Name>Znuny4OTRS-TypePriorityBasedEscalation</Name>
+    <Name>Znuny-TypePriorityBasedEscalation</Name>
     <Version>6.0.4</Version>
     <ChangeLog Version="6.0.4" Date="2021-02-12 17:46:17 +0100">Happy new year. Tidied code.</ChangeLog>
     <ChangeLog Version="6.0.3" Date="2020-04-07 18:04:37 +0200">Tidied code.</ChangeLog>
@@ -8,8 +8,7 @@
     <ChangeLog Version="6.0.1" Date="2017-11-14 14:14:12 +0100">Initial release 6.0.x.</ChangeLog>
     <ChangeLog Version="5.0.1" Date="2017-03-17 14:57:07 +0100">Added TicketTypeUpdate event to TicketEscalationIndex and TriggerEscalationStopEvents to trigger escalation events.</ChangeLog>
     <ChangeLog Version="1.4.1" Date="2016-02-11 17:43:00 UTC">Ported to OTRS 5.</ChangeLog>
-    <Framework>6.0.x</Framework>
-    <PackageRequired Version="6.0.71">Znuny4OTRS-Repo</PackageRequired>
+    <Framework>6.1.x</Framework>
     <Vendor>Znuny GmbH</Vendor>
     <URL>http://znuny.com/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
@@ -22,9 +21,9 @@
         <File Permission="660" Location="Custom/Kernel/Output/HTML/Templates/Standard/AdminType.tt"/>
         <File Permission="660" Location="Custom/Kernel/System/Priority.pm"/>
         <File Permission="660" Location="Custom/Kernel/System/Type.pm"/>
-        <File Permission="660" Location="Kernel/Config/Files/XML/Znuny4OTRSTypePriorityBasedEscalation.xml"/>
-        <File Permission="660" Location="Kernel/Language/de_Znuny4OTRSTypePriorityBasedEscalation.pm"/>
-        <File Permission="660" Location="Kernel/System/Ticket/Znuny4OTRSTypePriorityBasedEscalation.pm"/>
+        <File Permission="660" Location="Kernel/Config/Files/XML/ZnunyTypePriorityBasedEscalation.xml"/>
+        <File Permission="660" Location="Kernel/Language/de_ZnunyTypePriorityBasedEscalation.pm"/>
+        <File Permission="660" Location="Kernel/System/Ticket/ZnunyTypePriorityBasedEscalation.pm"/>
     </Filelist>
     <DatabaseInstall>
         <TableAlter Name="ticket_priority">
@@ -74,4 +73,5 @@
             <ColumnDrop Name="solution_notify"/>
         </TableAlter>
     </DatabaseUninstall>
+    <PackageMerge Name="Znuny4OTRS-TypePriorityBasedEscalation" TargetVersion="6.0.4"></PackageMerge>
 </otrs_package>
