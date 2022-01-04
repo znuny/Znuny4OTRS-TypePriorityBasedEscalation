@@ -1,8 +1,8 @@
 # --
-# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/System/Priority.pm
+# $origin: znuny - 18936749d764398ffbc38708daa2cf180eb1bd1a - Kernel/System/Priority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -16,7 +16,7 @@ use warnings;
 
 our @ObjectDependencies = (
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #     'Kernel::Config',
 # ---
@@ -24,7 +24,7 @@ our @ObjectDependencies = (
     'Kernel::System::DB',
     'Kernel::System::Log',
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #     'Kernel::System::SysConfig',
 # ---
@@ -65,11 +65,21 @@ sub new {
 
 =head2 PriorityList()
 
-return a priority list as hash
+get priority list as a hash of ID, Name pairs
 
-    my %List = $PriorityObject->PriorityList(
-        Valid => 0,
+    my %PriorityList = $PriorityObject->PriorityList(
+        Valid => 0,   # (optional) default 1 (0|1)
     );
+
+returns
+
+    %PriorityList = (
+        1 => '1 very low',
+        2 => '2 low',
+        3 => '3 normal',
+        4 => '4 high',
+        5 => '5 very high'
+    )
 
 =cut
 
@@ -127,11 +137,23 @@ sub PriorityList {
 
 =head2 PriorityGet()
 
-get a priority
+get priority attributes
 
-    my %List = $PriorityObject->PriorityGet(
+    my %PriorityData = $PriorityObject->PriorityGet(
         PriorityID => 123,
         UserID     => 1,
+    );
+
+returns:
+
+    %PriorityData = (
+        ID          => '123',
+        Name        => '123 something',
+        ValidID     => '1',
+        CreateTime  => '2021-02-01 12:15:00',
+        CreateBy    => '321',
+        ChangeTime  => '2021-04-01 15:30:00',
+        ChangeBy    => '223',
     );
 
 =cut
@@ -140,11 +162,11 @@ sub PriorityGet {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-    for (qw(PriorityID UserID)) {
-        if ( !$Param{$_} ) {
+    for my $Needed (qw(PriorityID UserID)) {
+        if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $_!"
+                Message  => "Need $Needed!"
             );
             return;
         }
@@ -161,7 +183,7 @@ sub PriorityGet {
 
     # ask database
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Prepare(
 #        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by '
@@ -184,7 +206,7 @@ sub PriorityGet {
         $Data{ChangeTime} = $Row[5];
         $Data{ChangeBy}   = $Row[6];
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
         $Data{Calendar}            = $Row[7];
         $Data{FirstResponseTime}   = $Row[8];
@@ -223,11 +245,11 @@ sub PriorityAdd {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-    for (qw(Name ValidID UserID)) {
-        if ( !$Param{$_} ) {
+    for my $Needed (qw(Name ValidID UserID)) {
+        if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $_!"
+                Message  => "Need $Needed!"
             );
             return;
         }
@@ -236,7 +258,7 @@ sub PriorityAdd {
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Do(
 #        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, '
@@ -299,11 +321,11 @@ sub PriorityUpdate {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-    for (qw(PriorityID Name ValidID UserID)) {
-        if ( !$Param{$_} ) {
+    for my $Needed (qw(PriorityID Name ValidID UserID)) {
+        if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $_!"
+                Message  => "Need $Needed!"
             );
             return;
         }
@@ -312,7 +334,7 @@ sub PriorityUpdate {
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Do(
 #        SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '

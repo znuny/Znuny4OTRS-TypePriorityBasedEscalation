@@ -1,8 +1,8 @@
 # --
-# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/Modules/AdminPriority.pm
+# $origin: znuny - 012b2cb0daf8519ff314f751ad03b62219f63331 - Kernel/Modules/AdminPriority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -80,7 +80,7 @@ sub Run {
 
         # get params
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #        for my $Parameter (qw(PriorityID Name ValidID)) {
         for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
@@ -169,7 +169,7 @@ sub Run {
 
                     }
 
-                    my $DeploymentResult = $SysConfigObject->ConfigurationDeploy(
+                    $SysConfigObject->ConfigurationDeploy(
                         Comments      => "Priority name change",
                         DirtySettings => \@IsPriorityInSysConfig,
                         UserID        => $Self->{UserID},
@@ -245,7 +245,7 @@ sub Run {
 
         # get params
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #        for my $Parameter (qw(PriorityID Name ValidID)) {
         for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
@@ -340,7 +340,7 @@ sub _Edit {
     );
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
     # generate CalendarOptionStrg
     my %CalendarList;

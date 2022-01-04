@@ -1,12 +1,11 @@
 # Functionality
 
-This package extends the OTRS standard with type and priority based escalations.
-In default OTRS escalation can only be activated and configured for queues and services/SLAs.
+In Znuny, escalations can only be activated and configured for queues and services/SLAs.
+This package extends Znuny with type and priority based escalations.
 
-The default order is:
-Service/SLA, Type, Priority, Queue
+The default order is service/SLA, type, priority, queue.
 
-## Feature List
+## Features
 
 * Allows you to define escalation attributes for ticket types via the admin interface.
 ![Screenshot Types](doc/en/type.png)

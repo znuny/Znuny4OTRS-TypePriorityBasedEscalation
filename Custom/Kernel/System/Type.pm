@@ -1,8 +1,8 @@
 # --
-# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
-# $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/System/Type.pm
+# $origin: znuny - 012b2cb0daf8519ff314f751ad03b62219f63331 - Kernel/System/Type.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -16,7 +16,7 @@ use warnings;
 
 our @ObjectDependencies = (
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #     'Kernel::Config',
 #     'Kernel::System::SysConfig',
@@ -74,11 +74,11 @@ sub TypeAdd {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-    for (qw(Name ValidID UserID)) {
-        if ( !$Param{$_} ) {
+    for my $Needed (qw(Name ValidID UserID)) {
+        if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $_!"
+                Message  => "Need $Needed!"
             );
             return;
         }
@@ -97,7 +97,7 @@ sub TypeAdd {
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Do(
 #        SQL => 'INSERT INTO ticket_type (name, valid_id, '
@@ -214,7 +214,7 @@ sub TypeGet {
 
     # ask the database
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Prepare(
 #        SQL => 'SELECT id, name, valid_id, '
@@ -241,7 +241,7 @@ sub TypeGet {
         $Type{ChangeTime} = $Data[5];
         $Type{ChangeBy}   = $Data[6];
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
         $Type{Calendar}            = $Data[7];
         $Type{FirstResponseTime}   = $Data[8];
@@ -254,9 +254,10 @@ sub TypeGet {
 
     # no data found
     if ( !%Type ) {
+        my $Error = $Param{Name} ? "Type '$Param{Name}'" : "TypeID '$Param{ID}'";
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => "TypeID '$Param{ID}' not found!",
+            Message  => $Error . " not found!",
         );
         return;
     }
@@ -289,11 +290,11 @@ sub TypeUpdate {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-    for (qw(ID Name ValidID UserID)) {
-        if ( !$Param{$_} ) {
+    for my $Needed (qw(ID Name ValidID UserID)) {
+        if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $_!"
+                Message  => "Need $Needed!"
             );
             return;
         }
@@ -316,7 +317,7 @@ sub TypeUpdate {
 
     # sql
 # ---
-# Znuny4OTRS-TypePriorityBasedEscalation
+# Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
 #        SQL => 'UPDATE ticket_type SET name = ?, valid_id = ?, '
