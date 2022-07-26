@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2022 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
 # --
 # $origin: znuny - 7b01128479d53da23792fc174c6b51bd183056b7 - Kernel/System/Ticket.pm
