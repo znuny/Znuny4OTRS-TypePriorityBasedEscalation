@@ -2,13 +2,13 @@
 <otrs_package version="1.0">
     <Name>Znuny-TypePriorityBasedEscalation</Name>
     <Version>6.4.1</Version>
-    <ChangeLog Version="1.4.1" Date="2016-02-11 17:43:00 UTC">Ported to OTRS 5.</ChangeLog>
     <Framework>6.4.x</Framework>
     <Vendor>Znuny GmbH</Vendor>
     <URL>http://znuny.com/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <Description Lang="en">An extension to support type and priority based escalations.</Description>
     <Description Lang="de">Eine Erweiterung um typ- und prioritätsbasierte Eskalationen zu unterstützen.</Description>
+    <ChangeLog Version="1.4.1" Date="2016-02-11 17:43:00 UTC">Ported to OTRS 5.</ChangeLog>
     <ChangeLog Version="6.4.1" Date="2022-07-27 22:21:41 +0200">initial release for Znuny 6.4</ChangeLog>
     <ChangeLog Version="6.2.1" Date="2022-01-05 10:34:04 +0100">Initial release for Znuny 6.2.</ChangeLog>
     <ChangeLog Version="6.1.1" Date="2022-01-05 10:19:40 +0100">Initial release for Znuny 6.1.</ChangeLog>
