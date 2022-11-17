@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2022 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2012-2022 Znuny GmbH, https://znuny.com/
 # --
 # $origin: znuny - f99bac036c969a34415839fbc1de903e6b59f72d - Kernel/Modules/AdminType.pm
 # --
