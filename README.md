@@ -15,11 +15,11 @@ This package extends Znuny with type and priority based escalations.
 
 **Prerequisites**
 
-- Znuny 6.2
+- Znuny 6.4
 
 **Installation**
 
-Download the [package](https://addons.znuny.com/api/addon_repos/public/2122/latest) and install it via admin interface -> package manager.
+Download the [package](https://addons.znuny.com/api/addon_repos/public/2400/latest) and install it via admin interface -> package manager.
 
 **Configuration**
 
@@ -27,7 +27,7 @@ The lookup for escalation data is configurable via SysConfig. The default order 
 
 **Download**
 
-Download the [latest version](https://addons.znuny.com/api/addon_repos/public/2122/latest).
+Download the [latest version](https://addons.znuny.com/api/addon_repos/public/2400/latest).
 
 **Professional Support**
 
