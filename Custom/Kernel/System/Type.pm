@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # Copyright (C) 2012 Znuny GmbH, https://znuny.com/
 # --
-# $origin: znuny - 012b2cb0daf8519ff314f751ad03b62219f63331 - Kernel/System/Type.pm
+# $origin: Znuny - 640b06bdaf7fdcba8c9562a2432411d017f09098 - Kernel/System/Type.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -15,12 +15,7 @@ use strict;
 use warnings;
 
 our @ObjectDependencies = (
-# ---
-# Znuny-TypePriorityBasedEscalation
-# ---
-#     'Kernel::Config',
-#     'Kernel::System::SysConfig',
-# ---
+    'Kernel::Config',
     'Kernel::System::Cache',
     'Kernel::System::DB',
     'Kernel::System::Log',
@@ -155,13 +150,13 @@ get types attributes
 Returns:
 
     Type = (
-        ID                  => '123',
-        Name                => 'Service Request',
-        ValidID             => '1',
-        CreateTime          => '2010-04-07 15:41:15',
-        CreateBy            => '321',
-        ChangeTime          => '2010-04-07 15:59:45',
-        ChangeBy            => '223',
+        ID         => '123',
+        Name       => 'Service Request',
+        ValidID    => '1',
+        CreateTime => '2010-04-07 15:41:15',
+        CreateBy   => '321',
+        ChangeTime => '2010-04-07 15:59:45',
+        ChangeBy   => '223',
     );
 
 =cut
@@ -249,7 +244,7 @@ sub TypeGet {
         $Type{UpdateTime}          = $Data[10];
         $Type{UpdateNotify}        = $Data[11];
         $Type{SolutionTime}        = $Data[12];
-
+# ---
     }
 
     # no data found
@@ -311,6 +306,23 @@ sub TypeUpdate {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "A type with the name '$Param{Name}' already exists.",
+        );
+        return;
+    }
+
+    my %Type = $Self->TypeGet(
+        ID => $Param{ID},
+    );
+
+    # check if the type is set as a default ticket type
+    if (
+        $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Type::Default') eq $Type{Name}
+        && $Param{ValidID} != 1
+        )
+    {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "The ticket type is set as a default ticket type, so it cannot be set to invalid!"
         );
         return;
     }
@@ -475,7 +487,7 @@ sub TypeLookup {
 
         $Exist = $TypeObject->NameExistsCheck(
             Name => 'Some::Template',
-            ID => 1, # optional
+            ID   => 1,                  # optional
         );
 
 =cut

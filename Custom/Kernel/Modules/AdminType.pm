@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # Copyright (C) 2012 Znuny GmbH, https://znuny.com/
 # --
-# $origin: znuny - f99bac036c969a34415839fbc1de903e6b59f72d - Kernel/Modules/AdminType.pm
+# $origin: Znuny - 2acbc11790726af75000f3c382fd1a0860fbbc4b - Kernel/Modules/AdminType.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -13,6 +13,7 @@ package Kernel::Modules::AdminType;
 
 use strict;
 use warnings;
+use utf8;
 
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::Language qw(Translatable);
@@ -22,7 +23,6 @@ our $ObjectManagerDisabled = 1;
 sub new {
     my ( $Type, %Param ) = @_;
 
-    # allocate new hash for object
     my $Self = {%Param};
     bless( $Self, $Type );
 

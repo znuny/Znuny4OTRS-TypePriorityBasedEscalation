@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # Copyright (C) 2012 Znuny GmbH, https://znuny.com/
 # --
-# $origin: znuny - 012b2cb0daf8519ff314f751ad03b62219f63331 - Kernel/Modules/AdminPriority.pm
+# $origin: Znuny - 4cf40286149a04dc09d9973fcd484bc5ddfe5b22 - Kernel/Modules/AdminPriority.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -13,6 +13,7 @@ package Kernel::Modules::AdminPriority;
 
 use strict;
 use warnings;
+use utf8;
 
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::Language qw(Translatable);
@@ -331,6 +332,13 @@ sub _Edit {
     # get valid list
     my %ValidList        = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
     my %ValidListReverse = reverse %ValidList;
+
+    $Param{ColorPicker} = $LayoutObject->ColorPicker(
+        Type  => 'InputField',
+        Name  => 'Color',
+        ID    => 'Color',
+        Color => $Param{Color},
+    );
 
     $Param{ValidOptionStrg} = $LayoutObject->BuildSelection(
         Data       => \%ValidList,
