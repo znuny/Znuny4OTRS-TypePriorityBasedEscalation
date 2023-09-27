@@ -10,7 +10,6 @@ package Kernel::Language::de_ZnunyTypePriorityBasedEscalation;
 
 use strict;
 use warnings;
-
 use utf8;
 
 sub Data {
