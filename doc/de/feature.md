@@ -1,6 +1,6 @@
 # Funktionalität
 
-In Znuny kann die Eskalation nur für Queues aktiviert und konfiguriert werden.
+In Znuny kann die Eskalation nur für Queues und Services/SLAs aktiviert und konfiguriert werden.
 Diese Erweiterung enthält die Funktionalität um typ- und prioritätsbasierte Eskalationen zu unterstützen.
 
 Die Standardreihenfolge ist Service/SLA, Type, Priority, Queue.

@@ -1,8 +1,7 @@
 ![Znuny logo](https://www.znuny.com/assets/images/logo_small.png)
 
 
-![Build status](https://badge.proxy.znuny.com/Znuny4OTRS-TypePriorityBasedEscalation/rel-7_0)
-
+![Build status](https://badge.proxy.znuny.com/Znuny4OTRS-TypePriorityBasedEscalation/rel-7_1)
 
 Znuny-TypePriorityBasedEscalation
 =================================
@@ -15,25 +14,20 @@ This package extends Znuny with type and priority based escalations.
 
 **Prerequisites**
 
-- Znuny 7.0
+- Znuny 7.1
 
 **Installation**
 
-Download the [package](https://addons.znuny.com/api/addon_repos/public/2400/latest) and install it via admin interface -> package manager.
+Use the online repository **Znuny Open Source Add-ons** from the package manager to install the add-on. From the command line use this command: `bin/znuny.Console.pl Admin::Package::Install  https://addons.znuny.com/public/:Znuny-TypePriorityBasedEscalation`
 
 **Configuration**
 
 The lookup for escalation data is configurable via SysConfig. The default order is service/SLA, type, priority, queue.
 
-**Download**
+**Commercial Support**
 
-Download the [latest version](https://addons.znuny.com/api/addon_repos/public/2400/latest).
+For this add-on and for Znuny in general visit [www.znuny.com](https://www.znuny.com). Looking forward to hear from you.
 
-**Professional Support**
-
-For this add-on and for Znuny in general visit [www.znuny.com](https://www.znuny.com). Looking forward to hear from you!
-
-Enjoy!
 
 Your Znuny Team!
 
