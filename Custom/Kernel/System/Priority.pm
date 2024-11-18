@@ -187,9 +187,9 @@ sub PriorityGet {
 # Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Prepare(
-#        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by '
+#        SQL => 'SELECT id, name, valid_id, color, create_time, create_by, change_time, change_by '
     return if !$DBObject->Prepare(
-        SQL => 'SELECT id, name, valid_id, create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
+        SQL => 'SELECT id, name, valid_id, color, create_time, create_by, change_time, change_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify '
             . 'FROM ticket_priority WHERE id = ?',
         Bind  => [ \$Param{PriorityID} ],
         Limit => 1,
@@ -202,20 +202,21 @@ sub PriorityGet {
         $Data{ID}         = $Row[0];
         $Data{Name}       = $Row[1];
         $Data{ValidID}    = $Row[2];
-        $Data{CreateTime} = $Row[3];
-        $Data{CreateBy}   = $Row[4];
-        $Data{ChangeTime} = $Row[5];
-        $Data{ChangeBy}   = $Row[6];
+        $Data{Color}      = $Row[3];
+        $Data{CreateTime} = $Row[4];
+        $Data{CreateBy}   = $Row[5];
+        $Data{ChangeTime} = $Row[6];
+        $Data{ChangeBy}   = $Row[7];
 # ---
 # Znuny-TypePriorityBasedEscalation
 # ---
-        $Data{Calendar}            = $Row[7];
-        $Data{FirstResponseTime}   = $Row[8];
-        $Data{FirstResponseNotify} = $Row[9];
-        $Data{UpdateTime}          = $Row[10];
-        $Data{UpdateNotify}        = $Row[11];
-        $Data{SolutionTime}        = $Row[12];
-        $Data{SolutionNotify}      = $Row[13];
+        $Data{Calendar}            = $Row[8];
+        $Data{FirstResponseTime}   = $Row[9];
+        $Data{FirstResponseNotify} = $Row[10];
+        $Data{UpdateTime}          = $Row[11];
+        $Data{UpdateNotify}        = $Row[12];
+        $Data{SolutionTime}        = $Row[13];
+        $Data{SolutionNotify}      = $Row[14];
 # ---
     }
 
@@ -265,22 +266,22 @@ sub PriorityAdd {
 # Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Do(
-#        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, '
+#        SQL => 'INSERT INTO ticket_priority (name, valid_id, color, create_time, create_by, '
 #            . 'change_time, change_by) VALUES '
-#            . '(?, ?, current_timestamp, ?, current_timestamp, ?)',
+#            . '(?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
 #        Bind => [
-#            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
+#            \$Param{Name}, \$Param{ValidID}, \$Param{Color}, \$Param{UserID}, \$Param{UserID},
 #        ],
 #    );
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
         $Param{ $DefaultNullAttr } ||= 0;
     }
     return if !$DBObject->Do(
-        SQL => 'INSERT INTO ticket_priority (name, valid_id, create_time, create_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
+        SQL => 'INSERT INTO ticket_priority (name, valid_id, color, create_time, create_by, calendar_name, first_response_time, first_response_notify, update_time, update_notify, solution_time, solution_notify, '
             . 'change_time, change_by) VALUES '
-            . '(?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
+            . '(?, ?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{Color}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{UserID},
         ],
     );
 # ---
@@ -343,10 +344,10 @@ sub PriorityUpdate {
 # Znuny-TypePriorityBasedEscalation
 # ---
 #    return if !$DBObject->Do(
-#        SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
+#        SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, color = ?, '
 #            . 'change_time = current_timestamp, change_by = ? WHERE id = ?',
 #        Bind => [
-#            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{PriorityID},
+#            \$Param{Name}, \$Param{ValidID}, \$Param{Color}, \$Param{UserID}, \$Param{PriorityID},
 #        ],
 #    );
     for my $DefaultNullAttr ( qw(FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify) ) {
@@ -355,10 +356,10 @@ sub PriorityUpdate {
     $Param{Calendar} ||= '';
 
     return if !$DBObject->Do(
-        SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, '
+        SQL => 'UPDATE ticket_priority SET name = ?, valid_id = ?, color = ?, '
             . 'change_time = current_timestamp, change_by = ?, calendar_name = ?, first_response_time = ?, first_response_notify = ?, update_time = ?, update_notify = ?, solution_time = ?, solution_notify = ? WHERE id = ?',
         Bind => [
-            \$Param{Name}, \$Param{ValidID}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{PriorityID},
+            \$Param{Name}, \$Param{ValidID}, \$Param{Color}, \$Param{UserID}, \$Param{Calendar}, \$Param{FirstResponseTime}, \$Param{FirstResponseNotify}, \$Param{UpdateTime}, \$Param{UpdateNotify}, \$Param{SolutionTime}, \$Param{SolutionNotify}, \$Param{PriorityID},
         ],
     );
 # ---

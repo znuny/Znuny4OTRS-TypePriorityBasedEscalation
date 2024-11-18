@@ -83,8 +83,8 @@ sub Run {
 # ---
 # Znuny-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+#        for my $Parameter (qw(PriorityID Name ValidID Color)) {
+        for my $Parameter (qw(PriorityID Name ValidID Color Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
 # ---
             $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
@@ -248,8 +248,8 @@ sub Run {
 # ---
 # Znuny-TypePriorityBasedEscalation
 # ---
-#        for my $Parameter (qw(PriorityID Name ValidID)) {
-        for my $Parameter (qw(PriorityID Name ValidID Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
+#        for my $Parameter (qw(PriorityID Name ValidID Color)) {
+        for my $Parameter (qw(PriorityID Name ValidID Color Calendar FirstResponseTime FirstResponseNotify UpdateTime UpdateNotify SolutionTime SolutionNotify)) {
 # ---
             $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
