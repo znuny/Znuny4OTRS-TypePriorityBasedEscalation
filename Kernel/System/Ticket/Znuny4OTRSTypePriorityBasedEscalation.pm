@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, http://znuny.com/
+# Copyright (C) 2012 Znuny GmbH, https://znuny.com/
 # --
 # $origin: otrs - 2be0a4540ffd992654d13728e82a63d9040e1a3a - Kernel/System/Ticket.pm
 # --
@@ -8,7 +8,7 @@
 # the enclosed file COPYING for license information (GPL). If you
 # did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
-## nofilter(TidyAll::Plugin::OTRS::Perl::PerlCritic)
+## nofilter(TidyAll::Plugin::Znuny::Perl::PerlCritic)
 
 package Kernel::System::Ticket::Znuny4OTRSTypePriorityBasedEscalation;
 
