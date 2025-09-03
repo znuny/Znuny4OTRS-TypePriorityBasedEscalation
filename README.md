@@ -1,7 +1,7 @@
 ![Znuny logo](https://www.znuny.com/assets/images/logo_small.png)
 
 
-![Build status](https://badge.proxy.znuny.com/Znuny4OTRS-TypePriorityBasedEscalation/rel-7_1)
+![Build status](https://badge.proxy.znuny.com/Znuny4OTRS-TypePriorityBasedEscalation/rel-7_2)
 
 Znuny-TypePriorityBasedEscalation
 =================================
@@ -14,7 +14,7 @@ This package extends Znuny with type and priority based escalations.
 
 **Prerequisites**
 
-- Znuny 7.1
+- Znuny 7.2
 
 **Installation**
 
