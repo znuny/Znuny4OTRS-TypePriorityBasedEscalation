@@ -2,7 +2,7 @@
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # Copyright (C) 2012 Znuny GmbH, https://znuny.com/
 # --
-# $origin: Znuny - 640b06bdaf7fdcba8c9562a2432411d017f09098 - Kernel/System/Ticket.pm
+# $origin: Znuny - 8f0e7a4089be0244e6e198f54c12859f66146903 - Kernel/System/Ticket.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
